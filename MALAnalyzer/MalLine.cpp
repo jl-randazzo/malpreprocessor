@@ -14,7 +14,7 @@ MalLine::MalLine(string line) : _line(line) { ProcessLine(); }
 ostream & operator <<(ostream &out, const MalLine &malLine)
 {
 	out << malLine._line << " ";
-	if (malLine._emptyLine)
+	if (malLine._validLine)
 	{
 		out << "true";
 	}
@@ -34,6 +34,11 @@ string MalLine::GetLine()
 bool MalLine::IsLineEmpty()
 {
 	return _emptyLine;
+}
+
+bool MalLine::IsLineValid()
+{
+	return _validLine;
 }
 
 int MalLine::GetCommentIndex()
@@ -57,13 +62,18 @@ void MalLine::ProcessLine()
 		_lineNoComment = _line.substr(start, len);
 		string workingString = _lineNoComment;
 		string targ = PopNext(workingString);
-		if (regex_match(targ, labelRegex))
+
+		if (regex_match(targ, labelRegex)) //Is this a label?
 		{
 			cout << "label";
 		}
-		else if (regex_match(targ, addRegex))
+		else if (regex_match(targ, addRegex)) //Is this an Add instruction?
 		{
 			cout << "add";
+			string arg1 = PopNext(workingString), arg2 = PopNext(workingString), arg3 = PopNext(workingString);
+			_validLine = ValidateWord(arg1, Register, false) &&
+				ValidateWord(arg2, Register, false) &&
+				ValidateWord(arg3, Register, true);
 		}
 	}
 	else
@@ -73,7 +83,7 @@ void MalLine::ProcessLine()
 }
 
 //adjustments to the passed in string are made purposefully
-string MalLine::PopNext(string &line)
+const string MalLine::PopNext(string &line) const
 {
 	int term = line.find_first_of(" ", 0);
 	if (term == -1)
@@ -90,7 +100,18 @@ string MalLine::PopNext(string &line)
 	}
 }
 
-void MalLine::ValidateNext(string &next, WordType type, bool finalOp)
+bool MalLine::ValidateWord(string &targ, WordType type, bool finalOp)
 {
-	return;
+	switch (type)
+	{
+	case Register:
+		if (regex_match(targ, regRegex)) break;
+		_errorMessage = "illformed register";
+		return false;
+	case Immediate:
+	default:
+		break;
+	}
+	if (finalOp) return targ.find_first_of(",", 0) == -1;
+	else return targ.find(",", 0) == targ.length() - 1;
 }
