@@ -29,5 +29,11 @@
     <ClCompile Include="MALAnalyzer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="MalLine.h">
+      <Filter>Header Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MalLine.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
