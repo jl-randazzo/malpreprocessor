@@ -2,12 +2,15 @@
 #include <string>
 #include <regex>
 
+static const std::regex labelRegex = std::regex("^([a-zA-Z]{1,5}):$");
+static const std::regex addRegex = std::regex("^ADD$");
+
 class MalLine {
 public:
 	//constructor and ostream operator
 	MalLine(std::string line);
 	friend std::ostream & operator <<(std::ostream &out, const MalLine &malLine);
-
+	
 	//dumb accessors
 	std::string GetLine();
 	bool IsLineEmpty();
@@ -21,5 +24,10 @@ private:
 	std::string _errorMessage;
 	//line processor
 	void ProcessLine();
-	const std::regex label = std::regex("^([a-zA-Z]{1,5}):$");
+	void ValidateNext(std::string &next, WordType type, bool finalOp);
+};
+
+enum WordType
+{
+	Register, Immediate, MemAddress, LabelPointer
 };

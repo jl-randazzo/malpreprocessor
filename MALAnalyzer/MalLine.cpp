@@ -6,6 +6,7 @@
 
 using namespace std;
 
+
 MalLine::MalLine(string line) : _line(line) { ProcessLine(); }
 
 ostream & operator <<(ostream &out, const MalLine &malLine)
@@ -50,12 +51,12 @@ void MalLine::ProcessLine()
 	{
 		int len = _line.length() - start;
 		string targ = _line.substr(start, len);
-		if (regex_match(targ, label, regex_constants::match_default))
+		if (regex_match(targ, labelRegex))
 		{
 			_commentIndex = start;
-			_emptyLine = true;
+			_emptyLine = false;
 		}
-		else
+		else if (regex_match(targ, addRegex))
 		{
 			_emptyLine = false;
 		}
