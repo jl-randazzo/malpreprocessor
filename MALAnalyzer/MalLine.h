@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include <string>
+#include <regex>
 
 class MalLine {
 public:
@@ -20,4 +21,5 @@ private:
 	std::string _errorMessage;
 	//line processor
 	void ProcessLine();
+	const std::regex label = std::regex("^([a-zA-Z]{1,5}):$");
 };
