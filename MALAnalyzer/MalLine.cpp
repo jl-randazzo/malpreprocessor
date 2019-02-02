@@ -88,7 +88,7 @@ void MalLine::ProcessLine()
 void MalLine::ProcessLine(string &opcode, string &workingCopy)
 {
 	ErrorCode code;
-	if (regex_match(opcode, addRegex) || regex_match(opcode, subRegex)) //Is this an Add instruction?
+	if (regex_match(opcode, addsubRegex)) //Is this an Add instruction?
 	{
 		string args[3];
 		code = ExtractArgs(workingCopy, args, 3);
@@ -99,7 +99,7 @@ void MalLine::ProcessLine(string &opcode, string &workingCopy)
 				ValidateWord(args[2], Register, true);
 		}
 	}
-	else if (regex_match(opcode, incRegex) || regex_match(opcode, incRegex))
+	else if (regex_match(opcode, incdecRegex))
 	{
 		string args[1];
 		code = ExtractArgs(workingCopy, args, 1);

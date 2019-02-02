@@ -7,12 +7,9 @@ static const std::regex anyLabelRegex = std::regex("^.*:$"); //ends with colon
 static const std::regex labelRegex = std::regex("^([a-zA-Z]{1,5}):$"); //valid label
 
 //opcode regular expressions
-static const std::regex addRegex = std::regex("^ADD$");
-static const std::regex subRegex = std::regex("^SUB$");
-static const std::regex incRegex = std::regex("^INC$");
-static const std::regex decRegex = std::regex("^DEC$");
+static const std::regex addsubRegex = std::regex("^(ADD)|(SUB)$");
+static const std::regex incdecRegex = std::regex("^(INC)|(DEC)$");
 static const std::regex lsRegex = std::regex("^(LOAD)|(STORE)$");
-static const std::regex storeRegex = std::regex("^STORE$");
 static const std::regex loadiRegex = std::regex("^LOADI$");
 static const std::regex bcompRegex = std::regex("^B((EQ)|(LT)|(GT))$");
 
