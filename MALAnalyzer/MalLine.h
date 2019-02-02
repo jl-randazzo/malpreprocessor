@@ -22,13 +22,14 @@ static const std::regex identRegex = std::regex("^[a-zA-Z]{1,5},{0,1}$");
 
 enum ErrorCode
 {
-	NoError, TooFewOps, TooManyOps
+	NoError, TooFewOps, TooManyOps, BadRegister, BadLabel, BadImmediate, BadIdent
 };
 enum WordType
 {
 	Register, Immediate, MemAddress
 };
 
+//Encapsulates data processing and storage for a given line written in the fictional language MAL. 
 class MalLine {
 public:
 	//constructor and ostream operator
@@ -36,11 +37,13 @@ public:
 	friend std::ostream & operator <<(std::ostream &out, const MalLine &malLine);
 	
 	//dumb accessors
-	std::string GetLine();
+	const std::string GetLine();
+	const std::string GetLineWithoutComment();
 	bool IsLineEmpty();
 	bool IsLineValid();
 	int GetCommentIndex();
-	std::string GetErrorMessage();
+	ErrorCode GetErrorCode();
+	const std::string GetErrorMessage();
 private:
 	//private variables
 	std::string _line;
@@ -48,6 +51,7 @@ private:
 	bool _validLine;
 	bool _emptyLine;
 	int _commentIndex;
+	ErrorCode _errorCode;
 	std::string _errorMessage;
 	//line processor and related functions
 	void ProcessLine();

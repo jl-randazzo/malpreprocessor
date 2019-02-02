@@ -5,18 +5,13 @@
 #include <regex>
 
 
-
-
-
-
-
 using namespace std;
 
 MalLine::MalLine(string line) : _line(line) { ProcessLine(); }
 
 ostream & operator <<(ostream &out, const MalLine &malLine)
 {
-	out << malLine._line << " ";
+	out << malLine._lineNoComment << " " << endl << malLine._errorMessage << " " << endl;
 	if (malLine._validLine)
 	{
 		out << "true";
@@ -25,13 +20,19 @@ ostream & operator <<(ostream &out, const MalLine &malLine)
 	{
 		out << "false";
 	}
+	out << endl;
 	return out;
 }
 
 //Accessors
-string MalLine::GetLine()
+const string MalLine::GetLine()
 {
 	return _line;
+}
+
+const string MalLine::GetLineWithoutComment()
+{
+	return _lineNoComment;
 }
 
 bool MalLine::IsLineEmpty()
@@ -49,7 +50,12 @@ int MalLine::GetCommentIndex()
 	return _commentIndex;
 }
 
-string MalLine::GetErrorMessage()
+ErrorCode MalLine::GetErrorCode()
+{
+	return _errorCode;
+}
+
+const string MalLine::GetErrorMessage()
 {
 	return _errorMessage;
 }
@@ -88,12 +94,11 @@ void MalLine::ProcessLine()
 
 void MalLine::ProcessLine(string &opcode, string &workingCopy)
 {
-	ErrorCode code = NoError;
 	if (regex_match(opcode, addsubRegex)) //Is this an ADD or SUB instruction?
 	{
 		string args[3];
-		code = ExtractArgs(workingCopy, args, 3);
-		if (code == NoError)
+		_errorCode = ExtractArgs(workingCopy, args, 3);
+		if (_errorCode == NoError)
 		{
 			_validLine = ValidateWord(args[0], Register, false) &&
 				ValidateWord(args[1], Register, false) &&
@@ -103,8 +108,8 @@ void MalLine::ProcessLine(string &opcode, string &workingCopy)
 	else if (regex_match(opcode, incdecRegex)) //Is this an INC or DEC instruction?
 	{
 		string args[1];
-		code = ExtractArgs(workingCopy, args, 1);
-		if (code == NoError)
+		_errorCode = ExtractArgs(workingCopy, args, 1);
+		if (_errorCode == NoError)
 		{
 			_validLine = ValidateWord(args[0], Register, true);
 		}
@@ -112,8 +117,8 @@ void MalLine::ProcessLine(string &opcode, string &workingCopy)
 	else if (regex_match(opcode, lsRegex)) //Is this a LOAD or STORE instruction?
 	{
 		string args[2];
-		code = ExtractArgs(workingCopy, args, 2);
-		if (code == NoError)
+		_errorCode = ExtractArgs(workingCopy, args, 2);
+		if (_errorCode == NoError)
 		{
 			_validLine = ValidateWord(args[0], Register, false) && ValidateWord(args[1], MemAddress, true);
 		}
@@ -121,8 +126,8 @@ void MalLine::ProcessLine(string &opcode, string &workingCopy)
 	else if (regex_match(opcode, loadiRegex)) //Is this a LOADI instruction?
 	{
 		string args[2];
-		code = ExtractArgs(workingCopy, args, 2);
-		if (code == NoError)
+		_errorCode = ExtractArgs(workingCopy, args, 2);
+		if (_errorCode == NoError)
 		{
 			_validLine = ValidateWord(args[0], Register, false) && ValidateWord(args[1], Immediate, true);
 		}
@@ -130,8 +135,8 @@ void MalLine::ProcessLine(string &opcode, string &workingCopy)
 	else if (regex_match(opcode, bcompRegex)) //Is this a BEQ, BLT, or BGT instruction?
 	{
 		string args[3];
-		code = ExtractArgs(workingCopy, args, 2);
-		if (code == NoError)
+		_errorCode = ExtractArgs(workingCopy, args, 2);
+		if (_errorCode == NoError)
 		{
 			_validLine = ValidateWord(args[0], Register, false) && ValidateWord(args[1], Immediate, false)
 				&& ValidateWord(args[2], MemAddress, true);
@@ -140,8 +145,8 @@ void MalLine::ProcessLine(string &opcode, string &workingCopy)
 	else if (regex_match(opcode, bRegex)) //Is this a B instruction?
 	{
 		string args[1];
-		code = ExtractArgs(workingCopy, args, 1);
-		if (code == NoError)
+		_errorCode = ExtractArgs(workingCopy, args, 1);
+		if (_errorCode == NoError)
 		{
 			_validLine = ValidateWord(args[0], MemAddress, true);
 		}
@@ -155,8 +160,8 @@ void MalLine::ProcessLine(string &opcode, string &workingCopy)
 		_validLine = false;
 	}
 
-	//if the code was altered above, we need to adjust the errorMessage
-	switch (code)
+	//if the _errorCode was altered above, we need to adjust the errorMessage
+	switch (_errorCode)
 	{
 	case TooFewOps:
 		_validLine = false;
@@ -215,14 +220,17 @@ bool MalLine::ValidateWord(string &targ, WordType type, bool finalOp)
 	{
 	case Register:
 		if (regex_match(targ, regRegex)) break;
+		_errorCode = BadRegister;
 		_errorMessage = "ill-formed operand: expected register but found \"" + targ + "\"";
 		return false;
 	case Immediate:
 		if (regex_match(targ, immRegex)) break;
+		_errorCode = BadImmediate;
 		_errorMessage = "ill-formed immediate value: expected octal value (0-7) but found \"" + targ + "\"";
 		return false;
 	case MemAddress:
 		if (regex_match(targ, identRegex)) break;
+		_errorCode = BadIdent;
 		_errorMessage = "ill-formed identifier: an identifier is invalid (non-letters or more than five letters)";
 		return false;
 	}
