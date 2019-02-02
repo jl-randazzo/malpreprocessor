@@ -94,7 +94,7 @@ void MalLine::ProcessLine()
 
 void MalLine::ProcessLine(string &opcode, string &workingCopy)
 {
-	if (regex_match(opcode, addsubRegex)) //Is this an ADD or SUB instruction?
+	if (opcode._Equal("ADD") | opcode._Equal("SUB")) //Is this an ADD or SUB instruction?
 	{
 		string args[3];
 		_errorCode = ExtractArgs(workingCopy, args, 3);
@@ -105,7 +105,7 @@ void MalLine::ProcessLine(string &opcode, string &workingCopy)
 				ValidateWord(args[2], Register, true);
 		}
 	}
-	else if (regex_match(opcode, incdecRegex)) //Is this an INC or DEC instruction?
+	else if (opcode._Equal("INC") | opcode._Equal("DEC")) //Is this an INC or DEC instruction?
 	{
 		string args[1];
 		_errorCode = ExtractArgs(workingCopy, args, 1);
@@ -114,7 +114,7 @@ void MalLine::ProcessLine(string &opcode, string &workingCopy)
 			_validLine = ValidateWord(args[0], Register, true);
 		}
 	}
-	else if (regex_match(opcode, lsRegex)) //Is this a LOAD or STORE instruction?
+	else if (opcode._Equal("LOAD") | opcode._Equal("STORE")) //Is this a LOAD or STORE instruction?
 	{
 		string args[2];
 		_errorCode = ExtractArgs(workingCopy, args, 2);
@@ -123,7 +123,7 @@ void MalLine::ProcessLine(string &opcode, string &workingCopy)
 			_validLine = ValidateWord(args[0], Register, false) && ValidateWord(args[1], MemAddress, true);
 		}
 	}
-	else if (regex_match(opcode, loadiRegex)) //Is this a LOADI instruction?
+	else if (opcode._Equal("LOADI")) //Is this a LOADI instruction?
 	{
 		string args[2];
 		_errorCode = ExtractArgs(workingCopy, args, 2);
@@ -132,7 +132,7 @@ void MalLine::ProcessLine(string &opcode, string &workingCopy)
 			_validLine = ValidateWord(args[0], Register, false) && ValidateWord(args[1], Immediate, true);
 		}
 	}
-	else if (regex_match(opcode, bcompRegex)) //Is this a BEQ, BLT, or BGT instruction?
+	else if (opcode._Equal("BEQ") | opcode._Equal("BGT") | opcode._Equal("BLT")) //Is this a BEQ, BLT, or BGT instruction?
 	{
 		string args[3];
 		_errorCode = ExtractArgs(workingCopy, args, 2);
@@ -142,7 +142,7 @@ void MalLine::ProcessLine(string &opcode, string &workingCopy)
 				&& ValidateWord(args[2], MemAddress, true);
 		}
 	}
-	else if (regex_match(opcode, bRegex)) //Is this a B instruction?
+	else if (opcode._Equal("B")) //Is this a B instruction?
 	{
 		string args[1];
 		_errorCode = ExtractArgs(workingCopy, args, 1);
@@ -151,7 +151,7 @@ void MalLine::ProcessLine(string &opcode, string &workingCopy)
 			_validLine = ValidateWord(args[0], MemAddress, true);
 		}
 	}
-	else if (regex_match(opcode, noendRegex)) //Is this a NOOP or END instruction?
+	else if (opcode._Equal("NOOP") | opcode._Equal("END")) //Is this a NOOP or END instruction?
 	{
 		_validLine = !HasNext(workingCopy); //There shouldn't be another operand
 	}
