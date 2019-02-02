@@ -2,13 +2,18 @@
 #include <string>
 #include <regex>
 
-//instruction regular expressions
-static const std::regex labelRegex = std::regex("^([a-zA-Z]{1,5}):$");
+//label regular expressions
+static const std::regex anyLabelRegex = std::regex("^.*:$"); //ends with colon
+static const std::regex labelRegex = std::regex("^([a-zA-Z]{1,5}):$"); //valid label
+
+//opcode regular expressions
 static const std::regex addRegex = std::regex("^ADD$");
+static const std::regex subRegex = std::regex("^SUB$");
 
 //operand regular expressions
 static const std::regex regRegex = std::regex("^R[0-7],{0,1}$");
 static const std::regex immRegex = std::regex("^[0-7]{0,7},{0,1}$");
+static const std::regex identRegex = std::regex("^[a-zA-Z]{1,5},{0,1}$");
 
 enum ErrorCode
 {
@@ -39,10 +44,11 @@ private:
 	bool _emptyLine;
 	int _commentIndex;
 	std::string _errorMessage;
-	//line processor
+	//line processor and related functions
 	void ProcessLine();
+	void ProcessLine(std::string &opcode, std::string &workingCopy);
 	const std::string PopNext(std::string &line) const;
-	void ExtractArgs(std::string &workingCopy, std::string args[], int count) const;
+	ErrorCode ExtractArgs(std::string &workingCopy, std::string args[], int count) const;
 	bool HasNext(const std::string &workingCopy) const;
 	bool ValidateWord(std::string &targ, WordType type, bool finalOp);
 };

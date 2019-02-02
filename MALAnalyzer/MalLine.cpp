@@ -7,6 +7,7 @@
 
 
 
+
 using namespace std;
 
 MalLine::MalLine(string line) : _line(line) { ProcessLine(); }
@@ -63,18 +64,18 @@ void MalLine::ProcessLine()
 		string workingCopy = _lineNoComment;
 		string targ = PopNext(workingCopy);
 
-		if (regex_match(targ, labelRegex)) //Is this a label?
+		if (regex_match(targ, anyLabelRegex)) //Is this a label?
 		{
-			cout << "label";
+			if (regex_match(targ, labelRegex)) //valid label?
+			{
+				cout << "label";
+				targ = PopNext(workingCopy);
+				ProcessLine(targ, workingCopy);
+			}
 		}
-		else if (regex_match(targ, addRegex)) //Is this an Add instruction?
+		else 
 		{
-			cout << "add";
-			string args[3];
-			ExtractArgs(workingCopy, args, 3);
-			_validLine = ValidateWord(args[0], Register, false) &&
-				ValidateWord(args[1], Register, false) &&
-				ValidateWord(args[2], Register, true);
+			ProcessLine(targ, workingCopy);
 		}
 	}
 	else
@@ -83,18 +84,34 @@ void MalLine::ProcessLine()
 	}
 }
 
-void MalLine::ExtractArgs(string &workingCopy, string args[], int count) const
+void MalLine::ProcessLine(string &opcode, string &workingCopy)
+{
+	ErrorCode code;
+	if (regex_match(opcode, addRegex) || regex_match(opcode, subRegex)) //Is this an Add instruction?
+	{
+		string args[3];
+		code = ExtractArgs(workingCopy, args, 3);
+		if (code == NoError)
+		{
+			_validLine = ValidateWord(args[0], Register, false) &&
+				ValidateWord(args[1], Register, false) &&
+				ValidateWord(args[2], Register, true);
+		}
+	}
+}
+
+ErrorCode MalLine::ExtractArgs(string &workingCopy, string args[], int count) const
 {
 	for (int i = 0; i < 3; i++)
 	{
 		if (HasNext(workingCopy)) args[i] = PopNext(workingCopy);
 		else
 		{
-			//_errorMessage = "too few operands: for the specific opcode, there are fewer operands than required";
-			//_validLine = false;
-			return;
+			return TooFewOps;
 		}
 	}
+	if (HasNext(workingCopy)) return TooManyOps;
+	else return NoError;
 }
 
 bool MalLine::HasNext(const string &workingCopy) const
