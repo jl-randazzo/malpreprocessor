@@ -9,10 +9,16 @@ static const std::regex labelRegex = std::regex("^([a-zA-Z]{1,5}):$"); //valid l
 //opcode regular expressions
 static const std::regex addRegex = std::regex("^ADD$");
 static const std::regex subRegex = std::regex("^SUB$");
+static const std::regex incRegex = std::regex("^INC$");
+static const std::regex decRegex = std::regex("^DEC$");
+static const std::regex loadRegex = std::regex("^LOAD$");
+static const std::regex storeRegex = std::regex("^STORE$");
+static const std::regex loadiRegex = std::regex("^LOADI$");
+static const std::regex bcompRegex = std::regex("^B((EQ)|(LT)|(GT))$");
 
 //operand regular expressions
 static const std::regex regRegex = std::regex("^R[0-7],{0,1}$");
-static const std::regex immRegex = std::regex("^[0-7]{0,7},{0,1}$");
+static const std::regex immRegex = std::regex("^[0-7]{1,8},{0,1}$");
 static const std::regex identRegex = std::regex("^[a-zA-Z]{1,5},{0,1}$");
 
 enum ErrorCode
@@ -21,7 +27,7 @@ enum ErrorCode
 };
 enum WordType
 {
-	Register, Immediate, MemAddress, LabelPointer
+	Register, Immediate, MemAddress
 };
 
 class MalLine {

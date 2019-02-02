@@ -98,6 +98,61 @@ void MalLine::ProcessLine(string &opcode, string &workingCopy)
 				ValidateWord(args[2], Register, true);
 		}
 	}
+	else if (regex_match(opcode, incRegex) || regex_match(opcode, incRegex))
+	{
+		string args[1];
+		code = ExtractArgs(workingCopy, args, 1);
+		if (code == NoError)
+		{
+			_validLine = ValidateWord(args[0], Register, true);
+		}
+	}
+	else if (regex_match(opcode, loadRegex) || regex_match(opcode, storeRegex))
+	{
+		string args[2];
+		code = ExtractArgs(workingCopy, args, 2);
+		if (code == NoError)
+		{
+			_validLine = ValidateWord(args[0], Register, false) && ValidateWord(args[1], MemAddress, true);
+		}
+	}
+	else if (regex_match(opcode, loadiRegex))
+	{
+		string args[2];
+		code = ExtractArgs(workingCopy, args, 2);
+		if (code == NoError)
+		{
+			_validLine = ValidateWord(args[0], Register, false) && ValidateWord(args[1], Immediate, true);
+		}
+	}
+	else if (regex_match(opcode, bcompRegex))
+	{
+		string args[3];
+		code = ExtractArgs(workingCopy, args, 2);
+		if (code == NoError)
+		{
+			_validLine = ValidateWord(args[0], Register, false) && ValidateWord(args[1], Immediate, false)
+				&& ValidateWord(args[2], MemAddress, true);
+		}
+	}
+	else
+	{
+		_validLine = false;
+	}
+
+	switch (code)
+	{
+	case TooFewOps:
+		_validLine = false;
+		_errorMessage = "too few operands: for the specific opcode, there are fewer operands than required";
+		break;
+	case TooManyOps:
+		_validLine = false;
+		_errorMessage = "too many operands: for the specific opcode, there are more operands than required";
+		break;
+	default:
+		break;
+	}
 }
 
 ErrorCode MalLine::ExtractArgs(string &workingCopy, string args[], int count) const
@@ -146,8 +201,13 @@ bool MalLine::ValidateWord(string &targ, WordType type, bool finalOp)
 		_errorMessage = "ill-formed operand: expected register but found \"" + targ + "\"";
 		return false;
 	case Immediate:
-	default:
-		break;
+		if (regex_match(targ, immRegex)) break;
+		_errorMessage = "ill-formed immediate value: expected octal value (0-7) but found \"" + targ + "\"";
+		return false;
+	case MemAddress:
+		if (regex_match(targ, identRegex)) break;
+		_errorMessage = "ill-formed identifier: an identifier is invalid (non-letters or more than five letters)";
+		return false;
 	}
 	if (finalOp) return targ.find_first_of(",", 0) == -1;
 	else return targ.find(",", 0) == targ.length() - 1;
