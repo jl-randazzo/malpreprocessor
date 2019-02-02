@@ -6,17 +6,7 @@
 static const std::regex anyLabelRegex = std::regex("^.*:$"); //ends with colon
 static const std::regex labelRegex = std::regex("^([a-zA-Z]{1,5}):$"); //valid label
 
-//opcode regular expressions
-static const std::regex addsubRegex = std::regex("^(ADD)|(SUB)$");
-static const std::regex incdecRegex = std::regex("^(INC)|(DEC)$");
-static const std::regex lsRegex = std::regex("^(LOAD)|(STORE)$");
-static const std::regex loadiRegex = std::regex("^LOADI$");
-static const std::regex bcompRegex = std::regex("^B((EQ)|(LT)|(GT))$");
-static const std::regex bRegex = std::regex("^B$");
-static const std::regex noendRegex = std::regex("^(NOOP)|(END)$");
-
 //operand regular expressions
-static const std::regex regRegex = std::regex("^R[0-7],{0,1}$");
 static const std::regex immRegex = std::regex("^[0-7]{1,8},{0,1}$");
 static const std::regex identRegex = std::regex("^[a-zA-Z]{1,5},{0,1}$");
 
@@ -60,4 +50,5 @@ private:
 	ErrorCode ExtractArgs(std::string &workingCopy, std::string args[], int count) const;
 	bool HasNext(const std::string &workingCopy) const;
 	bool ValidateWord(std::string &targ, WordType type, bool finalOp);
+	bool ValidateReg(const std::string &R);
 };

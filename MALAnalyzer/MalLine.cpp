@@ -5,6 +5,7 @@
 #include <regex>
 
 
+
 using namespace std;
 
 MalLine::MalLine(string line) : _line(line) { ProcessLine(); }
@@ -60,6 +61,8 @@ const string MalLine::GetErrorMessage()
 	return _errorMessage;
 }
 
+//Does initial check if there's a label, if there is an isntruction, produces a working copy, and then sends
+//the working copy and the word that should contain the opcode to the overloaded ProcessLine function
 void MalLine::ProcessLine()
 {
 	int start = _line.find_first_not_of(" ", 0);
@@ -92,6 +95,7 @@ void MalLine::ProcessLine()
 	}
 }
 
+//Goes through the possible opcode cases. Calls the ValidateWord function with the appropriate, expected enumeration
 void MalLine::ProcessLine(string &opcode, string &workingCopy)
 {
 	if (opcode._Equal("ADD") | opcode._Equal("SUB")) //Is this an ADD or SUB instruction?
@@ -219,7 +223,7 @@ bool MalLine::ValidateWord(string &targ, WordType type, bool finalOp)
 	switch (type)
 	{
 	case Register:
-		if (regex_match(targ, regRegex)) break;
+		if (ValidateReg(targ)) break;
 		_errorCode = BadRegister;
 		_errorMessage = "ill-formed operand: expected register but found \"" + targ + "\"";
 		return false;
@@ -236,4 +240,19 @@ bool MalLine::ValidateWord(string &targ, WordType type, bool finalOp)
 	}
 	if (finalOp) return targ.find_first_of(",", 0) == -1;
 	else return targ.find(",", 0) == targ.length() - 1;
+}
+
+bool MalLine::ValidateReg(const string &R)
+{
+	bool ret = false;
+	if (R.length() >= 2)
+	{
+		int ind = string("01234567").find_first_of(R[1], 0);
+		ret = (R[0] == 'R') && ind >= 0;
+	}
+	if (R.length() >= 3)
+	{
+		ret = ret && (R[2] == ',');
+	}
+	return ret && (R.length() < 4);
 }
