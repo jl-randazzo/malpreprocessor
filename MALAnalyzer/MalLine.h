@@ -12,6 +12,8 @@ static const std::regex incdecRegex = std::regex("^(INC)|(DEC)$");
 static const std::regex lsRegex = std::regex("^(LOAD)|(STORE)$");
 static const std::regex loadiRegex = std::regex("^LOADI$");
 static const std::regex bcompRegex = std::regex("^B((EQ)|(LT)|(GT))$");
+static const std::regex bRegex = std::regex("^B$");
+static const std::regex noendRegex = std::regex("^(NOOP)|(END)$");
 
 //operand regular expressions
 static const std::regex regRegex = std::regex("^R[0-7],{0,1}$");
