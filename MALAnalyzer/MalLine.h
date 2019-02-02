@@ -7,8 +7,6 @@ static const std::regex anyLabelRegex = std::regex("^.*:$"); //ends with colon
 static const std::regex labelRegex = std::regex("^([a-zA-Z]{1,5}):$"); //valid label
 
 //operand regular expressions
-static const std::regex immRegex = std::regex("^[0-7]{1,8},{0,1}$");
-static const std::regex identRegex = std::regex("^[a-zA-Z]{1,5},{0,1}$");
 
 //strings for character checking
 static const std::string alphabet = std::string("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ");
@@ -50,11 +48,12 @@ private:
 	std::string _errorMessage;
 	//line processor and related functions
 	void ProcessLine();
-	void ProcessLine(std::string &opcode, std::string &workingCopy);
+	void ProcessOperation(std::string &opcode, std::string &workingCopy);
 	const std::string PopNext(std::string &line) const;
 	ErrorCode ExtractArgs(std::string &workingCopy, std::string args[], int count) const;
 	bool HasNext(const std::string &workingCopy) const;
 	bool ValidateWord(std::string &targ, WordType type, bool finalOp);
 	ErrorCode ValidateReg(const std::string &R) const;
 	ErrorCode ValidateIdent(const std::string &ident) const;
+	ErrorCode ValidateImm(const std::string &imm) const;
 };

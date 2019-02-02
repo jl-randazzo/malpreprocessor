@@ -10,6 +10,7 @@
 
 
 
+
 using namespace std;
 
 MalLine::MalLine(string line) : _line(line) { ProcessLine(); }
@@ -66,7 +67,7 @@ const string MalLine::GetErrorMessage()
 }
 
 //Does initial check if there's a label, if there is an isntruction, produces a working copy, and then sends
-//the working copy and the word that should contain the opcode to the overloaded ProcessLine function
+//the working copy and the word that should contain the opcode to the ProcessOperation function
 void MalLine::ProcessLine()
 {
 	int start = _line.find_first_not_of(" ", 0);
@@ -85,12 +86,12 @@ void MalLine::ProcessLine()
 			{
 				cout << "label";
 				targ = PopNext(workingCopy);
-				ProcessLine(targ, workingCopy);
+				ProcessOperation(targ, workingCopy);
 			}
 		}
 		else 
 		{
-			ProcessLine(targ, workingCopy);
+			ProcessOperation(targ, workingCopy);
 		}
 	}
 	else
@@ -100,7 +101,7 @@ void MalLine::ProcessLine()
 }
 
 //Goes through the possible opcode cases. Calls the ValidateWord function with the appropriate, expected enumeration
-void MalLine::ProcessLine(string &opcode, string &workingCopy)
+void MalLine::ProcessOperation(string &opcode, string &workingCopy)
 {
 	if (opcode._Equal("ADD") | opcode._Equal("SUB")) //Is this an ADD or SUB instruction?
 	{
@@ -146,7 +147,7 @@ void MalLine::ProcessLine(string &opcode, string &workingCopy)
 		_errorCode = ExtractArgs(workingCopy, args, 2);
 		if (_errorCode == NoError)
 		{
-			_validLine = ValidateWord(args[0], Register, false) && ValidateWord(args[1], Immediate, false)
+			_validLine = ValidateWord(args[0], Register, false) && ValidateWord(args[1], Register, false)
 				&& ValidateWord(args[2], MemAddress, true);
 		}
 	}
@@ -222,6 +223,8 @@ const string MalLine::PopNext(string &workingCopy) const
 	}
 }
 
+//passes target word (targ) to the appropriate error checking routine based on WordType (type).
+//finalOp bool is used to check if a comma should be appended to the end of any given word
 bool MalLine::ValidateWord(string &targ, WordType type, bool finalOp)
 {
 	switch (type)
@@ -233,10 +236,21 @@ bool MalLine::ValidateWord(string &targ, WordType type, bool finalOp)
 			"**         Registers should be typed in the form R0, R1, R2, and are enumerated 0-7.";
 		return false;
 	case Immediate:
-		if (regex_match(targ, immRegex)) break;
-		_errorCode = BadImmediate;
-		_errorMessage = "ill-formed immediate value: expected octal value (0-7) but found \"" + targ + "\"";
-		return false;
+		_errorCode = ValidateImm(targ);
+		switch (_errorCode)
+		{
+		default:
+			break;
+		case InvalidLength:
+			_errorMessage = "** error -- ill-formed immediate value: \"" + targ + "\" is too long.\n" +
+				"**         Immediate values cannot have more than 8 characters and are written in octal representation (0-7).";
+			return false;
+		case InvalidCharacters:
+			_errorMessage = "** error -- ill-formed immediate value: \"" + targ + "\" has invalid characters.\n" +
+				"**         Immediate values cannot have more than 8 characters and are written in octal representation (0-7).";
+			return false;
+		}
+		break;
 	case MemAddress:
 		_errorCode = ValidateIdent(targ);
 		switch (_errorCode)
@@ -252,6 +266,7 @@ bool MalLine::ValidateWord(string &targ, WordType type, bool finalOp)
 				"**         Identifiers must be only letters (a-z, A-Z) and no longer than five characters.";
 			return false;
 		}
+		break;
 	}
 	if (finalOp)
 	{
@@ -275,6 +290,7 @@ bool MalLine::ValidateWord(string &targ, WordType type, bool finalOp)
 	}
 }
 
+//Register words can have commas at the end or not
 ErrorCode MalLine::ValidateReg(const string &R) const
 {
 	bool ret = false;
@@ -291,6 +307,21 @@ ErrorCode MalLine::ValidateReg(const string &R) const
 	else return BadRegister;
 }
 
+ErrorCode MalLine::ValidateImm(const string &imm) const
+{
+	bool ret = imm.length() > 0;
+	for (int i = 0; i < imm.length(); i++)
+	{
+		int ind = octal.find(imm[i], 0);
+		ret = ret && ind > -1;
+	}
+	if (ret) 
+		if (imm.length() < 9) return NoError; 
+		else return InvalidLength;
+	else return InvalidCharacters;
+}
+
+//Identifiers always appear last, so they should have nothing appended to the end
 ErrorCode MalLine::ValidateIdent(const string &ident) const
 {
 	bool ret = true;
