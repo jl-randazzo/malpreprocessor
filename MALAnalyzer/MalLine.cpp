@@ -6,6 +6,10 @@
 
 
 
+
+
+
+
 using namespace std;
 
 MalLine::MalLine(string line) : _line(line) { ProcessLine(); }
@@ -223,9 +227,10 @@ bool MalLine::ValidateWord(string &targ, WordType type, bool finalOp)
 	switch (type)
 	{
 	case Register:
-		if (ValidateReg(targ)) break;
-		_errorCode = BadRegister;
-		_errorMessage = "ill-formed operand: expected register but found \"" + targ + "\"";
+		_errorCode = ValidateReg(targ);
+		if (_errorCode == NoError) break;
+		_errorMessage = "** error -- ill-formed operand: invalid register declaration \"" + targ + "\"\n" +
+			"**         Registers should be typed in the form R0, R1, R2, and are enumerated 0-7.";
 		return false;
 	case Immediate:
 		if (regex_match(targ, immRegex)) break;
@@ -233,26 +238,70 @@ bool MalLine::ValidateWord(string &targ, WordType type, bool finalOp)
 		_errorMessage = "ill-formed immediate value: expected octal value (0-7) but found \"" + targ + "\"";
 		return false;
 	case MemAddress:
-		if (regex_match(targ, identRegex)) break;
-		_errorCode = BadIdent;
-		_errorMessage = "ill-formed identifier: an identifier is invalid (non-letters or more than five letters)";
-		return false;
+		_errorCode = ValidateIdent(targ);
+		switch (_errorCode)
+		{
+		default: //No Error
+			break;
+		case InvalidLength:
+			_errorMessage = "** error -- ill-formed identifier: the identifier \"" + targ + "\" is too long.\n" +
+				"**         Identifiers must be only letters (a-z, A-Z) and no longer than five characters.";
+			return false;
+		case InvalidCharacters:
+			_errorMessage = "** error -- ill-formed identifier: the identifier \"" + targ + "\" has invalid characters.\n" +
+				"**         Identifiers must be only letters (a-z, A-Z) and no longer than five characters.";
+			return false;
+		}
 	}
-	if (finalOp) return targ.find_first_of(",", 0) == -1;
-	else return targ.find(",", 0) == targ.length() - 1;
+	if (finalOp)
+	{
+		if (!targ.find_first_of(",", 0) == -1)
+		{
+			_errorCode = MisplacedComma;
+			_errorMessage = "** error -- misplaced comma: a comma is placed after the final operand; it shouldn't be there.";
+			return false;
+		}
+		else return true;
+	}
+	else
+	{
+		if (!targ.find(",", 0) == targ.length() - 1)
+		{
+			_errorCode = MissingComma;
+			_errorMessage = "** error -- missing comma: you are missing a comma following \"" + targ + ".\"";
+			return false;
+		}
+		else return true;
+	}
 }
 
-bool MalLine::ValidateReg(const string &R)
+ErrorCode MalLine::ValidateReg(const string &R) const
 {
 	bool ret = false;
 	if (R.length() >= 2)
 	{
-		int ind = string("01234567").find_first_of(R[1], 0);
+		int ind = octal.find_first_of(R[1], 0);
 		ret = (R[0] == 'R') && ind >= 0;
 	}
 	if (R.length() >= 3)
 	{
 		ret = ret && (R[2] == ',');
 	}
-	return ret && (R.length() < 4);
+	if (ret && (R.length() < 4)) return NoError;
+	else return BadRegister;
+}
+
+ErrorCode MalLine::ValidateIdent(const string &ident) const
+{
+	bool ret = true;
+	int searchLength = ident.length();
+	for (int i = 0; i < searchLength; i++)
+	{
+		int ind = alphabet.find_first_of(ident[i], 0);
+		ret = ret && ind > -1;
+	}
+	if (ret && searchLength > 0)
+		if (searchLength < 6) return NoError;
+		else return InvalidLength;
+	else return InvalidCharacters;
 }

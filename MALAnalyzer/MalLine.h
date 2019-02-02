@@ -10,9 +10,14 @@ static const std::regex labelRegex = std::regex("^([a-zA-Z]{1,5}):$"); //valid l
 static const std::regex immRegex = std::regex("^[0-7]{1,8},{0,1}$");
 static const std::regex identRegex = std::regex("^[a-zA-Z]{1,5},{0,1}$");
 
+//strings for character checking
+static const std::string alphabet = std::string("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ");
+static const std::string octal = std::string("01234567");
+
 enum ErrorCode
 {
-	NoError, TooFewOps, TooManyOps, BadRegister, BadLabel, BadImmediate, BadIdent
+	NoError, TooFewOps, TooManyOps, BadRegister, BadLabel, BadImmediate, BadIdent, InvalidLength, InvalidCharacters,
+	MisplacedComma, MissingComma
 };
 enum WordType
 {
@@ -50,5 +55,6 @@ private:
 	ErrorCode ExtractArgs(std::string &workingCopy, std::string args[], int count) const;
 	bool HasNext(const std::string &workingCopy) const;
 	bool ValidateWord(std::string &targ, WordType type, bool finalOp);
-	bool ValidateReg(const std::string &R);
+	ErrorCode ValidateReg(const std::string &R) const;
+	ErrorCode ValidateIdent(const std::string &ident) const;
 };
