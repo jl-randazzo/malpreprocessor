@@ -10,6 +10,10 @@ static const std::regex addRegex = std::regex("^ADD$");
 static const std::regex regRegex = std::regex("^R[0-7],{0,1}$");
 static const std::regex immRegex = std::regex("^[0-7]{0,7},{0,1}$");
 
+enum ErrorCode
+{
+	NoError, TooFewOps, TooManyOps
+};
 enum WordType
 {
 	Register, Immediate, MemAddress, LabelPointer
@@ -38,5 +42,7 @@ private:
 	//line processor
 	void ProcessLine();
 	const std::string PopNext(std::string &line) const;
+	void ExtractArgs(std::string &workingCopy, std::string args[], int count) const;
+	bool HasNext(const std::string &workingCopy) const;
 	bool ValidateWord(std::string &targ, WordType type, bool finalOp);
 };

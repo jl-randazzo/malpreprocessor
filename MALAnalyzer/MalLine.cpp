@@ -5,6 +5,8 @@
 #include <regex>
 
 
+
+
 using namespace std;
 
 MalLine::MalLine(string line) : _line(line) { ProcessLine(); }
@@ -68,16 +70,36 @@ void MalLine::ProcessLine()
 		else if (regex_match(targ, addRegex)) //Is this an Add instruction?
 		{
 			cout << "add";
-			string arg1 = PopNext(workingCopy), arg2 = PopNext(workingCopy), arg3 = PopNext(workingCopy);
-			_validLine = ValidateWord(arg1, Register, false) &&
-				ValidateWord(arg2, Register, false) &&
-				ValidateWord(arg3, Register, true);
+			string args[3];
+			ExtractArgs(workingCopy, args, 3);
+			_validLine = ValidateWord(args[0], Register, false) &&
+				ValidateWord(args[1], Register, false) &&
+				ValidateWord(args[2], Register, true);
 		}
 	}
 	else
 	{
 		_emptyLine = true;
 	}
+}
+
+void MalLine::ExtractArgs(string &workingCopy, string args[], int count) const
+{
+	for (int i = 0; i < 3; i++)
+	{
+		if (HasNext(workingCopy)) args[i] = PopNext(workingCopy);
+		else
+		{
+			//_errorMessage = "too few operands: for the specific opcode, there are fewer operands than required";
+			//_validLine = false;
+			return;
+		}
+	}
+}
+
+bool MalLine::HasNext(const string &workingCopy) const
+{
+	return workingCopy.find_first_not_of(":;, ", 0) >= 0;
 }
 
 //adjustments to the workingCopy string are made purposefully
@@ -104,7 +126,7 @@ bool MalLine::ValidateWord(string &targ, WordType type, bool finalOp)
 	{
 	case Register:
 		if (regex_match(targ, regRegex)) break;
-		_errorMessage = "illformed register";
+		_errorMessage = "ill-formed operand: expected register but found \"" + targ + "\"";
 		return false;
 	case Immediate:
 	default:
