@@ -8,6 +8,7 @@
 
 
 
+
 using namespace std;
 
 MalLine::MalLine(string line) : _line(line) { ProcessLine(); }
@@ -107,7 +108,7 @@ void MalLine::ProcessLine(string &opcode, string &workingCopy)
 			_validLine = ValidateWord(args[0], Register, true);
 		}
 	}
-	else if (regex_match(opcode, loadRegex) || regex_match(opcode, storeRegex))
+	else if (regex_match(opcode, lsRegex))
 	{
 		string args[2];
 		code = ExtractArgs(workingCopy, args, 2);
@@ -171,7 +172,8 @@ ErrorCode MalLine::ExtractArgs(string &workingCopy, string args[], int count) co
 
 bool MalLine::HasNext(const string &workingCopy) const
 {
-	return workingCopy.find_first_not_of(":;, ", 0) >= 0;
+	int ind = workingCopy.find_first_not_of(" ", 0); 
+	return ind >= 0;
 }
 
 //adjustments to the workingCopy string are made purposefully
