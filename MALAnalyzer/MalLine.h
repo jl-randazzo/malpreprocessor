@@ -36,8 +36,10 @@ public:
 	//dumb accessors
 	const std::string GetLine();
 	const std::string GetLineWithoutComment();
-	const std::string GetLabel();
-	bool HasLabel();
+	const std::string GetLeadingLabel();
+	const std::string GetBranchingLabel();
+	bool HasLeadingLabel();
+	bool HasBranchingLabel();
 	bool IsLineEmpty();
 	bool IsLineValid();
 	int GetCommentIndex();
@@ -47,7 +49,10 @@ private:
 	//private variables
 	std::string _line;
 	std::string _lineNoComment;
-	std::string _label = "";
+	std::string _leadingLabel = "";
+	std::string _branchingLabel = "";
+	bool _hasLeadingLabel;
+	bool _hasBranchingLabel;
 	bool _validLine;
 	bool _emptyLine;
 	int _commentIndex;

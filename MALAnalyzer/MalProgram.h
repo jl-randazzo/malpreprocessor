@@ -12,7 +12,9 @@ public:
 private:
 	//private functions
 	void ProcessLines();
-	std::list<MalLine> lines;
-	std::map<std::string, std::list<MalLine*>> _unresolvedLabels;
-	std::list<std::string> _resolvedLabels;
+	void ResolveLabel(); //called when a resolved label is found
+	bool CheckLabel(); //returns false if the label is unresolved, true if it is resolved. If it's not in the map, it adds it as 'false'
+	std::list<MalLine> _lines;
+	std::map<std::string, bool> _labelResolve; //encountered labels are the key, the bool being true means the actual label is found, false indicates it hasn't been
+
 };

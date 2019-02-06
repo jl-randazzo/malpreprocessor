@@ -4,12 +4,7 @@
 #include <iostream>
 #include <regex>
 
-
-
-
 using namespace std;
-
-
 
 MalLine::MalLine(string line) : _line(line) { ProcessLine(); }
 
@@ -46,14 +41,24 @@ const string MalLine::GetLineWithoutComment()
 	return _lineNoComment;
 }
 
-const string MalLine::GetLabel()
+const string MalLine::GetLeadingLabel()
 {
-	return _label;
+	return _leadingLabel;
 }
 
-bool MalLine::HasLabel()
+const string MalLine::GetBranchingLabel()
 {
-	return _label.length() > 0;
+	return _branchingLabel;
+}
+
+bool MalLine::HasLeadingLabel()
+{
+	return _hasLeadingLabel;
+}
+
+bool MalLine::HasBranchingLabel()
+{
+	return _hasBranchingLabel;
 }
 
 bool MalLine::IsLineEmpty()
