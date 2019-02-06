@@ -34,17 +34,17 @@ public:
 	static ErrorCode ValidateIdent(const std::string &ident);
 	static ErrorCode ValidateImm(const std::string &imm);
 	//dumb accessors
-	const std::string GetLine();
-	const std::string GetLineWithoutComment();
-	const std::string GetLeadingLabel();
-	const std::string GetBranchingLabel();
-	bool HasLeadingLabel();
-	bool HasBranchingLabel();
-	bool IsLineEmpty();
-	bool IsLineValid();
-	int GetCommentIndex();
-	ErrorCode GetErrorCode();
-	const std::string GetErrorMessage();
+	const std::string GetLine() const;
+	const std::string GetLineWithoutComment() const;
+	const std::string GetLeadingLabel() const;
+	const std::string GetBranchingLabel() const;
+	bool HasLeadingLabel() const;
+	bool HasBranchingLabel() const;
+	bool IsLineEmpty() const;
+	bool IsLineValid() const;
+	int GetCommentIndex() const;
+	ErrorCode GetErrorCode() const;
+	const std::string GetErrorMessage() const;
 private:
 	//private variables
 	std::string _line;

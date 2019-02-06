@@ -31,57 +31,57 @@ ostream & operator <<(ostream &out, const MalLine &malLine)
 }
 
 //Accessors
-const string MalLine::GetLine()
+const string MalLine::GetLine() const
 {
 	return _line;
 }
 
-const string MalLine::GetLineWithoutComment()
+const string MalLine::GetLineWithoutComment() const
 {
 	return _lineNoComment;
 }
 
-const string MalLine::GetLeadingLabel()
+const string MalLine::GetLeadingLabel() const
 {
 	return _leadingLabel;
 }
 
-const string MalLine::GetBranchingLabel()
+const string MalLine::GetBranchingLabel() const
 {
 	return _branchingLabel;
 }
 
-bool MalLine::HasLeadingLabel()
+bool MalLine::HasLeadingLabel() const
 {
 	return _hasLeadingLabel;
 }
 
-bool MalLine::HasBranchingLabel()
+bool MalLine::HasBranchingLabel() const
 {
 	return _hasBranchingLabel;
 }
 
-bool MalLine::IsLineEmpty()
+bool MalLine::IsLineEmpty() const
 {
 	return _emptyLine;
 }
 
-bool MalLine::IsLineValid()
+bool MalLine::IsLineValid() const
 {
 	return _validLine;
 }
 
-int MalLine::GetCommentIndex()
+int MalLine::GetCommentIndex() const
 {
 	return _commentIndex;
 }
 
-ErrorCode MalLine::GetErrorCode()
+ErrorCode MalLine::GetErrorCode() const
 {
 	return _errorCode;
 }
 
-const string MalLine::GetErrorMessage()
+const string MalLine::GetErrorMessage() const
 {
 	return _errorMessage;
 }
