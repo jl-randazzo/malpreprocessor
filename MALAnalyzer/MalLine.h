@@ -27,11 +27,17 @@ class MalLine {
 public:
 	//constructor and ostream operator
 	MalLine(std::string line);
-	friend std::ostream & operator <<(std::ostream &out, const MalLine &malLine);
-	
+	friend std::ostream & operator <<(std::ostream &out, const MalLine &malLine); 
+	void ResetError();
+	//public, static functions
+	static ErrorCode ValidateReg(const std::string &R);
+	static ErrorCode ValidateIdent(const std::string &ident);
+	static ErrorCode ValidateImm(const std::string &imm);
 	//dumb accessors
 	const std::string GetLine();
 	const std::string GetLineWithoutComment();
+	const std::string GetLabel();
+	bool HasLabel();
 	bool IsLineEmpty();
 	bool IsLineValid();
 	int GetCommentIndex();
@@ -41,6 +47,7 @@ private:
 	//private variables
 	std::string _line;
 	std::string _lineNoComment;
+	std::string _label = "";
 	bool _validLine;
 	bool _emptyLine;
 	int _commentIndex;
@@ -53,7 +60,4 @@ private:
 	ErrorCode ExtractArgs(std::string &workingCopy, std::string args[], int count) const;
 	bool HasNext(const std::string &workingCopy) const;
 	bool ValidateWord(std::string &targ, WordType type, bool finalOp);
-	ErrorCode ValidateReg(const std::string &R) const;
-	ErrorCode ValidateIdent(const std::string &ident) const;
-	ErrorCode ValidateImm(const std::string &imm) const;
 };

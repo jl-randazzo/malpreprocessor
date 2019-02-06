@@ -7,13 +7,18 @@
 
 
 
-
-
-
-
 using namespace std;
 
+
+
 MalLine::MalLine(string line) : _line(line) { ProcessLine(); }
+
+void MalLine::ResetError()
+{
+	_errorCode = NoError;
+	_errorMessage = "";
+	ProcessLine();
+}
 
 ostream & operator <<(ostream &out, const MalLine &malLine)
 {
@@ -39,6 +44,16 @@ const string MalLine::GetLine()
 const string MalLine::GetLineWithoutComment()
 {
 	return _lineNoComment;
+}
+
+const string MalLine::GetLabel()
+{
+	return _label;
+}
+
+bool MalLine::HasLabel()
+{
+	return _label.length() > 0;
 }
 
 bool MalLine::IsLineEmpty()
@@ -291,7 +306,7 @@ bool MalLine::ValidateWord(string &targ, WordType type, bool finalOp)
 }
 
 //Register words can have commas at the end or not
-ErrorCode MalLine::ValidateReg(const string &R) const
+ErrorCode MalLine::ValidateReg(const string &R)
 {
 	bool ret = false;
 	if (R.length() >= 2)
@@ -307,7 +322,7 @@ ErrorCode MalLine::ValidateReg(const string &R) const
 	else return BadRegister;
 }
 
-ErrorCode MalLine::ValidateImm(const string &imm) const
+ErrorCode MalLine::ValidateImm(const string &imm)
 {
 	bool ret = imm.length() > 0;
 	for (int i = 0; i < imm.length(); i++)
@@ -322,7 +337,7 @@ ErrorCode MalLine::ValidateImm(const string &imm) const
 }
 
 //Identifiers always appear last, so they should have nothing appended to the end
-ErrorCode MalLine::ValidateIdent(const string &ident) const
+ErrorCode MalLine::ValidateIdent(const string &ident)
 {
 	bool ret = true;
 	int searchLength = ident.length();
