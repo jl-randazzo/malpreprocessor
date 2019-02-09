@@ -1,2 +1,2 @@
-LOADI R0, 32
+LOADI R0, 32 ;first instruction
 ;testing testing

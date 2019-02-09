@@ -93,10 +93,11 @@ void MalLine::ProcessLine()
 {
 	int start = _line.find_first_not_of(" ", 0);
 	_commentIndex = _line.find_first_of(";", 0);
+	if (_commentIndex == -1) _commentIndex = _line.length();
 	if (start >= 0 && (_commentIndex == -1 || start < _commentIndex))
 	{
 		_emptyLine = false;
-		int len = _line.length() - start;
+		int len = _commentIndex - start;
 		_lineNoComment = _line.substr(start, len);
 		string workingCopy = _lineNoComment;
 		string targ = PopNext(workingCopy);
