@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "MalProgram.h"
+#include <iostream>
 #include <string>
 #include <list>
 
@@ -20,6 +21,7 @@ void MalProgram::ProcessLines(list<string> &stringList)
 			ResolveLabel(ml.GetLeadingLabel());
 		_lines.push_back(ml);
 	}
+	cout << "finished building MalProgram obj" << endl;
 }
 
 void MalProgram::ResolveLabel(string str)
@@ -27,16 +29,9 @@ void MalProgram::ResolveLabel(string str)
 	_labelResolve[str] = true;
 }
 
-bool MalProgram::CheckLabel(string str)
+bool MalProgram::CheckLabel(string str) const
 {
-	bool ret = (bool)_labelResolve.count(str);
 	if (_labelResolve.count(str) == 0)
-	{
-		_labelResolve[str] = false;
 		return false;
-	}
-	else
-	{
-		return _labelResolve[str];
-	}
+	else return true;
 }

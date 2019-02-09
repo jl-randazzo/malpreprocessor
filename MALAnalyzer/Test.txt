@@ -1,0 +1,2 @@
+1. LOADI R0, 32
+2. ;testing testing
