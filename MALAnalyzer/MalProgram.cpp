@@ -12,6 +12,7 @@ MalProgram::MalProgram(list<string> &stringList)
 
 void MalProgram::ProcessLines(list<string> &stringList)
 {
+	int i = 0;
 	for (string x : stringList)
 	{
 		MalLine ml(x);

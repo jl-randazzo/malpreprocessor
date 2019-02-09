@@ -4,16 +4,17 @@
 #include <iostream>
 #include <regex>
 
+
 using namespace std;
 
 MalLine::MalLine(string line) : _line(line) { ProcessLine(); }
 
-void MalLine::ResetError()
-{
-	_errorCode = NoError;
-	_errorMessage = "";
-	ProcessLine();
-}
+//void MalLine::ResetError()
+//{
+//	_errorCode = NoError;
+//	_errorMessage = "";
+//	ProcessLine();
+//}
 
 ostream & operator <<(ostream &out, const MalLine &malLine)
 {
@@ -123,61 +124,62 @@ void MalLine::ProcessLine()
 //Goes through the possible opcode cases. Calls the ValidateWord function with the appropriate, expected enumeration
 void MalLine::ProcessOperation(string &opcode, string &workingCopy)
 {
+	string lastarg;
 	if (opcode._Equal("ADD") | opcode._Equal("SUB")) //Is this an ADD or SUB instruction?
 	{
 		string args[3];
-		_errorCode = ExtractArgs(workingCopy, args, 3);
+		_errorCode = ExtractArgs(workingCopy, lastarg, args, 3);
 		if (_errorCode == NoError)
 		{
-			_validLine = ValidateWord(args[0], Register, false) &&
-				ValidateWord(args[1], Register, false) &&
-				ValidateWord(args[2], Register, true);
+			_validLine = ValidateWord(args[0], Register) &&
+				ValidateWord(args[1], Register) &&
+				ValidateWord(args[2], Register);
 		}
 	}
 	else if (opcode._Equal("INC") | opcode._Equal("DEC")) //Is this an INC or DEC instruction?
 	{
 		string args[1];
-		_errorCode = ExtractArgs(workingCopy, args, 1);
+		_errorCode = ExtractArgs(workingCopy, lastarg, args, 1);
 		if (_errorCode == NoError)
 		{
-			_validLine = ValidateWord(args[0], Register, true);
+			_validLine = ValidateWord(args[0], Register);
 		}
 	}
 	else if (opcode._Equal("LOAD") | opcode._Equal("STORE")) //Is this a LOAD or STORE instruction?
 	{
 		string args[2];
-		_errorCode = ExtractArgs(workingCopy, args, 2);
+		_errorCode = ExtractArgs(workingCopy, lastarg, args, 2);
 		if (_errorCode == NoError)
 		{
-			_validLine = ValidateWord(args[0], Register, false) && ValidateWord(args[1], MemAddress, true);
+			_validLine = ValidateWord(args[0], Register) && ValidateWord(args[1], MemAddress);
 		}
 	}
 	else if (opcode._Equal("LOADI")) //Is this a LOADI instruction?
 	{
 		string args[2];
-		_errorCode = ExtractArgs(workingCopy, args, 2);
+		_errorCode = ExtractArgs(workingCopy, lastarg, args, 2);
 		if (_errorCode == NoError)
 		{
-			_validLine = ValidateWord(args[0], Register, false) && ValidateWord(args[1], Immediate, true);
+			_validLine = ValidateWord(args[0], Register) && ValidateWord(args[1], Immediate);
 		}
 	}
 	else if (opcode._Equal("BEQ") | opcode._Equal("BGT") | opcode._Equal("BLT")) //Is this a BEQ, BLT, or BGT instruction?
 	{
 		string args[3];
-		_errorCode = ExtractArgs(workingCopy, args, 2);
+		_errorCode = ExtractArgs(workingCopy, lastarg, args, 2);
 		if (_errorCode == NoError)
 		{
-			_validLine = ValidateWord(args[0], Register, false) && ValidateWord(args[1], Register, false)
-				&& ValidateWord(args[2], MemAddress, true);
+			_validLine = ValidateWord(args[0], Register) && ValidateWord(args[1], Register)
+				&& ValidateWord(args[2], MemAddress);
 		}
 	}
 	else if (opcode._Equal("B")) //Is this a B instruction?
 	{
 		string args[1];
-		_errorCode = ExtractArgs(workingCopy, args, 1);
+		_errorCode = ExtractArgs(workingCopy, lastarg, args, 1);
 		if (_errorCode == NoError)
 		{
-			_validLine = ValidateWord(args[0], MemAddress, true);
+			_validLine = ValidateWord(args[0], MemAddress);
 		}
 	}
 	else if (opcode._Equal("NOOP") | opcode._Equal("END")) //Is this a NOOP or END instruction?
@@ -194,58 +196,83 @@ void MalLine::ProcessOperation(string &opcode, string &workingCopy)
 	{
 	case TooFewOps:
 		_validLine = false;
-		_errorMessage = "too few operands: for the specific opcode, there are fewer operands than required";
+		_errorMessage = "** error -- too few operands: for the specific opcode, there are fewer operands than required";
 		break;
 	case TooManyOps:
 		_validLine = false;
-		_errorMessage = "too many operands: for the specific opcode, there are more operands than required";
+		_errorMessage = "** error -- too many operands: for the specific opcode, there are more operands than required";
 		break;
+	case MissingComma:
+		_validLine = false;
+		_errorMessage = "** error -- missing argument delimiter: the argument \"" + lastarg + "\" doesn't have a comma immediately following it\n" +
+			"**          All arguments except the final argument should have a ',' immediately following them.";
+	case MisplacedComma:
+		_validLine = false;
+		_errorMessage = "** error -- errant argument delimiter: the argument \"" + lastarg + "\" should not have a comma following it.\n" +
+			"**          All arguments except the final argument should have a ',' immediately following them.";
 	default:
 		break;
 	}
 }
 
-ErrorCode MalLine::ExtractArgs(string &workingCopy, string args[], int count) const
+ErrorCode MalLine::ExtractArgs(string &workingCopy, string &lastarg, string args[], int count) const
 {
-	for (int i = 0; i < count; i++)
+	for (int i = 0; i < count - 1; i++)
 	{
-		if (HasNext(workingCopy)) args[i] = PopNext(workingCopy);
+		if (HasNext(workingCopy)) 
+		{
+			lastarg = PopNext(workingCopy);
+			args[i] = lastarg;
+			if (workingCopy[0] == ',')
+			{
+				workingCopy = workingCopy.substr(1);
+				continue;
+			}
+			else return MissingComma;
+		}
 		else
 		{
 			return TooFewOps;
 		}
 	}
+	if (HasNext(workingCopy))
+	{
+		lastarg = PopNext(workingCopy);
+		args[count - 1] = lastarg;
+		
+	}
 	if (HasNext(workingCopy)) return TooManyOps;
-	else return NoError;
+	if (workingCopy.find_first_of(',') != -1) return MisplacedComma;
+	return NoError;
 }
 
 bool MalLine::HasNext(const string &workingCopy) const
 {
-	int ind = workingCopy.find_first_not_of(" ", 0); 
+	int ind = workingCopy.find_first_not_of(", ", 0); 
 	return ind >= 0;
 }
 
 //adjustments to the workingCopy string are made purposefully
 const string MalLine::PopNext(string &workingCopy) const
 {
-	int term = workingCopy.find_first_of(" ", 0);
+	int beg = workingCopy.find_first_not_of(", ", 0);
+	int term = workingCopy.find_first_of(", ", beg);
 	if (term == -1)
 	{
-		string ret = workingCopy;
+		string ret = workingCopy.substr(beg);
 		workingCopy = "";
 		return ret;
 	}
 	else
 	{
-		string ret = workingCopy.substr(0, term);
-		workingCopy = workingCopy.substr(term + 1, workingCopy.length() - (term + 1));
+		string ret = workingCopy.substr(beg, term - beg);
+		workingCopy = workingCopy.substr(term);
 		return ret;
 	}
 }
 
 //passes target word (targ) to the appropriate error checking routine based on WordType (type).
-//finalOp bool is used to check if a comma should be appended to the end of any given word
-bool MalLine::ValidateWord(string &targ, WordType type, bool finalOp)
+bool MalLine::ValidateWord(string &targ, WordType type)
 {
 	switch (type)
 	{
@@ -288,42 +315,15 @@ bool MalLine::ValidateWord(string &targ, WordType type, bool finalOp)
 		}
 		break;
 	}
-	if (finalOp)
-	{
-		if (!targ.find_first_of(",", 0) == -1)
-		{
-			_errorCode = MisplacedComma;
-			_errorMessage = "** error -- misplaced comma: a comma is placed after the final operand; it shouldn't be there.";
-			return false;
-		}
-		else return true;
-	}
-	else
-	{
-		if (!targ.find(",", 0) == targ.length() - 1)
-		{
-			_errorCode = MissingComma;
-			_errorMessage = "** error -- missing comma: you are missing a comma following \"" + targ + ".\"";
-			return false;
-		}
-		else return true;
-	}
 }
 
 //Register words can have commas at the end or not
 ErrorCode MalLine::ValidateReg(const string &R)
 {
 	bool ret = false;
-	if (R.length() >= 2)
-	{
-		int ind = octal.find_first_of(R[1], 0);
-		ret = (R[0] == 'R') && ind >= 0;
-	}
-	if (R.length() >= 3)
-	{
-		ret = ret && (R[2] == ',');
-	}
-	if (ret && (R.length() < 4)) return NoError;
+	int ind = octal.find_first_of(R[1], 0);
+	ret = (R[0] == 'R') && ind >= 0;
+	if (ret && (R.length() == 2)) return NoError;
 	else return BadRegister;
 }
 

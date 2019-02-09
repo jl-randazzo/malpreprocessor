@@ -27,8 +27,7 @@ class MalLine {
 public:
 	//constructor and ostream operator
 	MalLine(std::string line);
-	friend std::ostream & operator <<(std::ostream &out, const MalLine &malLine); 
-	void ResetError();
+	friend std::ostream & operator <<(std::ostream &out, const MalLine &malLine);
 	//public, static functions
 	static ErrorCode ValidateReg(const std::string &R);
 	static ErrorCode ValidateIdent(const std::string &ident);
@@ -62,7 +61,7 @@ private:
 	void ProcessLine();
 	void ProcessOperation(std::string &opcode, std::string &workingCopy);
 	const std::string PopNext(std::string &line) const;
-	ErrorCode ExtractArgs(std::string &workingCopy, std::string args[], int count) const;
+	ErrorCode ExtractArgs(std::string &workingCopy, std::string &lastarg, std::string args[], int count) const;
 	bool HasNext(const std::string &workingCopy) const;
-	bool ValidateWord(std::string &targ, WordType type, bool finalOp);
+	bool ValidateWord(std::string &targ, WordType type);
 };
