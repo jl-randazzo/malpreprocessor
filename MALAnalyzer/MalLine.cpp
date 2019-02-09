@@ -223,11 +223,7 @@ ErrorCode MalLine::ExtractArgs(string &workingCopy, string &lastarg, string args
 		{
 			lastarg = PopNext(workingCopy);
 			args[i] = lastarg;
-			if (workingCopy[0] == ',')
-			{
-				workingCopy = workingCopy.substr(1);
-				continue;
-			}
+			if (workingCopy[0] == ',') continue;
 			else return MissingComma;
 		}
 		else
@@ -235,12 +231,13 @@ ErrorCode MalLine::ExtractArgs(string &workingCopy, string &lastarg, string args
 			return TooFewOps;
 		}
 	}
-	if (HasNext(workingCopy))
+
+	if (HasNext(workingCopy))//need to perform one final extraction. 
 	{
 		lastarg = PopNext(workingCopy);
 		args[count - 1] = lastarg;
-		
 	}
+
 	if (HasNext(workingCopy)) return TooManyOps;
 	if (workingCopy.find_first_of(',') != -1) return MisplacedComma;
 	return NoError;
