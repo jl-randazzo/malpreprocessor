@@ -32,12 +32,12 @@ void MalProgram::ResolveLabelBranch(string str)
 	_labelResolve[str] |= 0x1; //set the binary flag 0001, indicating the label has been branched to.
 }
 
-bool MalProgram::CheckLabelLocationFound(string str)
+bool MalProgram::CheckLabelLocationFound(string str) const
 {
-	return (_labelResolve[str] & 0x2);
+	return (_labelResolve.at(str) & 0x2);
 }
 
-bool MalProgram::CheckLabelBranching(string str)
+bool MalProgram::CheckLabelBranching(string str) const
 {
-	return (_labelResolve[str] & 0x1);
+	return (_labelResolve.at(str) & 0x1);
 }
