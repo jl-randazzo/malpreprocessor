@@ -175,7 +175,7 @@ void MalLine::ProcessOperation(string &opcode, string &workingCopy)
 	else if (opcode._Equal("BEQ") | opcode._Equal("BGT") | opcode._Equal("BLT")) //Is this a BEQ, BLT, or BGT instruction?
 	{
 		string args[3];
-		_errorCode = ExtractArgs(workingCopy, lastarg, args, 2);
+		_errorCode = ExtractArgs(workingCopy, lastarg, args, 3);
 		if (_errorCode == NoError)
 		{
 			_branchingLabel = args[2];
