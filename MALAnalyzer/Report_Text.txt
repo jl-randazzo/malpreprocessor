@@ -19,5 +19,5 @@ REPORT C -- PROGRAM WITH ERROR CODES
 3. LOADI  R1, 7
 5. LOADI  R2, 100
 7. BEQ  R1, R2, TEST   
-** error -- branching label "TEST" is not defined in the program scope.
+** warning -- branching label "TEST" is not defined in the program scope.
 9. END

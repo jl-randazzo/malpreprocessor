@@ -15,19 +15,29 @@ void MalProgram::ProcessLines(list<string> &stringList)
 	{
 		MalLine ml(x);
 		if (ml.HasLeadingLabel())
-			ResolveLabel(ml.GetLeadingLabel());
+			ResolveLabelLocation(ml.GetLeadingLabel());
+		if (ml.HasBranchingLabel())
+			ResolveLabelBranch(ml.GetBranchingLabel());
 		_lines.push_back(ml);
 	}
 }
 
-void MalProgram::ResolveLabel(string str)
+void MalProgram::ResolveLabelLocation(string str)
 {
-	_labelResolve[str] = true;
+	_labelResolve[str] |= 0x2; //set the binary flag 0010, indicating the leading label is found.
 }
 
-bool MalProgram::CheckLabel(string str) const
+void MalProgram::ResolveLabelBranch(string str)
 {
-	if (_labelResolve.count(str) == 0)
-		return false;
-	else return true;
+	_labelResolve[str] |= 0x1; //set the binary flag 0001, indicating the label has been branched to.
+}
+
+bool MalProgram::CheckLabelLocationFound(string str)
+{
+	return (_labelResolve[str] & 0x2);
+}
+
+bool MalProgram::CheckLabelBranching(string str)
+{
+	return (_labelResolve[str] & 0x1);
 }
