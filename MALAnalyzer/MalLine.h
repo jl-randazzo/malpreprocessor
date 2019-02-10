@@ -2,9 +2,6 @@
 #include <string>
 #include <regex>
 
-//label regular expressions
-static const std::regex anyLabelRegex = std::regex("^.*:$"); //ends with colon
-static const std::regex labelRegex = std::regex("^([a-zA-Z]{1,5}):$"); //valid label
 
 //operand regular expressions
 
@@ -15,7 +12,7 @@ static const std::string octal = std::string("01234567");
 enum ErrorCode
 {
 	NoError, TooFewOps, TooManyOps, BadRegister, BadLabel, BadImmediate, BadIdent, InvalidLength, InvalidCharacters,
-	MisplacedComma, MissingComma
+	MisplacedComma, MissingComma, InvalidOpcode
 };
 enum WordType
 {
@@ -50,10 +47,10 @@ private:
 	std::string _lineNoComment;
 	std::string _leadingLabel = "";
 	std::string _branchingLabel = "";
-	bool _hasLeadingLabel;
-	bool _hasBranchingLabel;
+	bool _hasLeadingLabel = false;
+	bool _hasBranchingLabel = false;
 	bool _validLine;
-	bool _emptyLine;
+	bool _emptyLine = false;
 	int _commentIndex;
 	ErrorCode _errorCode;
 	std::string _errorMessage;

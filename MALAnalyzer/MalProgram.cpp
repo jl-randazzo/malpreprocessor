@@ -1,8 +1,5 @@
 #include "stdafx.h"
 #include "MalProgram.h"
-#include <iostream>
-#include <string>
-#include <list>
 
 using namespace std;
 

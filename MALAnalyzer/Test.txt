@@ -1,7 +1,9 @@
 REPORT A -- FULL, UNEDITED PROGRAM
 1. LOADI R0, 32 ;first instruction
 2. ;testing testing
+3. LOAD R1, mem;
 
 REPORT B -- PROGRAM WITH COMMENTS AND BLANK LINES REMOVED
 1. LOADI R0, 32 
+3. LOAD R1, mem
 

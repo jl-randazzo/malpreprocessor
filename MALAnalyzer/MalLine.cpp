@@ -5,17 +5,12 @@
 #include <regex>
 
 
+
 using namespace std;
 
 MalLine::MalLine(string line) : _line(line) { ProcessLine(); }
 
-//void MalLine::ResetError()
-//{
-//	_errorCode = NoError;
-//	_errorMessage = "";
-//	ProcessLine();
-//}
-
+// outstream operator designed for testing purposes
 ostream & operator <<(ostream &out, const MalLine &malLine)
 {
 	out << malLine._lineNoComment << " " << endl << malLine._errorMessage << " " << endl;
@@ -102,13 +97,26 @@ void MalLine::ProcessLine()
 		string workingCopy = _lineNoComment;
 		string targ = PopNext(workingCopy);
 
-		if (regex_match(targ, anyLabelRegex)) //Is this a label?
+		if (targ[targ.length() - 1] == ':') //Is this a label?
 		{
-			if (regex_match(targ, labelRegex)) //valid label?
+			string labelcheck = targ.substr(0, targ.length() - 1);
+			_errorCode = ValidateIdent(labelcheck);
+			switch(_errorCode)
 			{
-				cout << "label";
+			case NoError: // valid label?
+				_leadingLabel = labelcheck;
+				_hasLeadingLabel = true;
 				targ = PopNext(workingCopy);
 				ProcessOperation(targ, workingCopy);
+				break;
+			case InvalidLength:
+				_errorMessage = "** error -- ill-formed leading label: the label \"" + labelcheck + "\" is too long.\n" +
+					"**         Labels must be only letters (a-z, A-Z) and no longer than five characters.";
+				break;
+			case InvalidCharacters:
+				_errorMessage = "** error -- ill-formed leading label: the label \"" + labelcheck + "\" has invalid characters.\n" +
+					"**         Labels must be only letters (a-z, A-Z) and no longer than five characters.";
+				break;
 			}
 		}
 		else 
@@ -125,7 +133,7 @@ void MalLine::ProcessLine()
 //Goes through the possible opcode cases. Calls the ValidateWord function with the appropriate, expected enumeration
 void MalLine::ProcessOperation(string &opcode, string &workingCopy)
 {
-	string lastarg;
+	string lastarg; // a reference string used to configure error message if there's a problem
 	if (opcode._Equal("ADD") | opcode._Equal("SUB")) //Is this an ADD or SUB instruction?
 	{
 		string args[3];
@@ -170,6 +178,8 @@ void MalLine::ProcessOperation(string &opcode, string &workingCopy)
 		_errorCode = ExtractArgs(workingCopy, lastarg, args, 2);
 		if (_errorCode == NoError)
 		{
+			_branchingLabel = args[2];
+			_hasBranchingLabel = true;
 			_validLine = ValidateWord(args[0], Register) && ValidateWord(args[1], Register)
 				&& ValidateWord(args[2], MemAddress);
 		}
@@ -180,6 +190,8 @@ void MalLine::ProcessOperation(string &opcode, string &workingCopy)
 		_errorCode = ExtractArgs(workingCopy, lastarg, args, 1);
 		if (_errorCode == NoError)
 		{
+			_hasBranchingLabel = true;
+			_branchingLabel = args[0];
 			_validLine = ValidateWord(args[0], MemAddress);
 		}
 	}
@@ -190,6 +202,9 @@ void MalLine::ProcessOperation(string &opcode, string &workingCopy)
 	else
 	{
 		_validLine = false;
+		_errorCode = InvalidOpcode;
+		_errorMessage = "** error -- \"" + opcode + "\" is an invalid label or operation code.\n" +
+			"**          Labels must be immediately followed with ':', and operations are defined in the MAL manual.";
 	}
 
 	//if the _errorCode was altered above, we need to adjust the errorMessage
