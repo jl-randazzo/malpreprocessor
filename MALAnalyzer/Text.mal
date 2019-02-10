@@ -1,6 +1,6 @@
 ;; warning: label missing for branch statement / Gurka
 
-LOADI  R1, 7
+TESTY: LOADI  R1, 7
 
 LOADI  R2, 100
 
