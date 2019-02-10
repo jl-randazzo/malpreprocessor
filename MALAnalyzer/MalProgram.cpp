@@ -18,7 +18,6 @@ void MalProgram::ProcessLines(list<string> &stringList)
 			ResolveLabel(ml.GetLeadingLabel());
 		_lines.push_back(ml);
 	}
-	cout << "finished building MalProgram obj" << endl;
 }
 
 void MalProgram::ResolveLabel(string str)

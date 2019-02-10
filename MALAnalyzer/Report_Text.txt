@@ -1,0 +1,23 @@
+REPORT A -- FULL, UNEDITED PROGRAM
+1. ;; warning: label missing for branch statement / Gurka
+2. 
+3. LOADI  R1, 7
+4. 
+5. LOADI  R2, 100
+6. 
+7. BEQ  R1, R2, TEST   
+8. 
+9. END
+
+REPORT B -- PROGRAM WITH COMMENTS AND BLANK LINES REMOVED
+3. LOADI  R1, 7
+5. LOADI  R2, 100
+7. BEQ  R1, R2, TEST   
+9. END
+
+REPORT C -- PROGRAM WITH ERROR CODES
+3. LOADI  R1, 7
+5. LOADI  R2, 100
+7. BEQ  R1, R2, TEST   
+** error -- branching label "TEST" is not defined in the program scope.
+9. END
