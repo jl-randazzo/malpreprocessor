@@ -1,6 +1,9 @@
 #include "stdafx.h"
 #include "MalProgram.h"
 
+#define LOCATED 2 // binary flag 0010, indicating the leading label is found.
+#define BRANCHED_TO 1 // binary flag 0001, indicating the label has been branched to.
+
 using namespace std;
 
 MalProgram::MalProgram(list<string> &stringList)
@@ -24,20 +27,20 @@ void MalProgram::ProcessLines(list<string> &stringList)
 
 void MalProgram::ResolveLabelLocation(string str)
 {
-	_labelResolve[str] |= 0x2; //set the binary flag 0010, indicating the leading label is found.
+	_labelResolve[str] |= LOCATED; 
 }
 
 void MalProgram::ResolveLabelBranch(string str)
 {
-	_labelResolve[str] |= 0x1; //set the binary flag 0001, indicating the label has been branched to.
+	_labelResolve[str] |= BRANCHED_TO; 
 }
 
 bool MalProgram::CheckLabelLocationFound(string str) const
 {
-	return (_labelResolve.at(str) & 0x2);
+	return (_labelResolve.at(str) & LOCATED);
 }
 
 bool MalProgram::CheckLabelBranching(string str) const
 {
-	return (_labelResolve.at(str) & 0x1);
+	return (_labelResolve.at(str) & BRANCHED_TO);
 }
