@@ -253,6 +253,7 @@ ErrorCode MalLine::ExtractArgs(string &workingCopy, string &lastarg, string args
 		lastarg = PopNext(workingCopy);
 		args[count - 1] = lastarg;
 	}
+	else return TooFewOps;
 
 	if (HasNext(workingCopy)) return TooManyOps;
 	if (workingCopy.find_first_of(',') != -1) return MisplacedComma;

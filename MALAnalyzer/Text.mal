@@ -2,8 +2,8 @@
 
 TESTY: LOADI  R1, 7
 
-LOADI  R2, 100
+LOADI  R2, ;100
 
-BEQ  R1, R2, TEST
+BEQ  R1, R2, TEST ; Test comment
 
 END

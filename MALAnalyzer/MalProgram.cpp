@@ -1,9 +1,6 @@
 #include "stdafx.h"
 #include "MalProgram.h"
 
-#define LOCATED 2 // binary flag 0010, indicating the leading label is found.
-#define BRANCHED_TO 1 // binary flag 0001, indicating the label has been branched to.
-
 using namespace std;
 
 MalProgram::MalProgram(list<string> &stringList)
