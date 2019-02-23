@@ -1,0 +1,31 @@
+---MAL ANALYZER REPORT---
+
+MAL program: empty.mal
+Report name: Report_empty.txt
+System time: Sat Feb 23 12:18:57 2019
+
+CS 3210 -- Written by: Josiah "Luke" Randazzo
+_________________________________________
+
+REPORT A -- FULL, UNEDITED PROGRAM
+1. ;; A program that does nothing but is legal.
+2. 
+3. ;;
+4. 
+5. END
+_________________________________________
+
+REPORT B -- PROGRAM WITH COMMENTS AND BLANK LINES REMOVED
+5. END
+_________________________________________
+
+REPORT C -- PROGRAM WITH ERROR CODES
+5. END
+
+_________________________________________
+
+SUMMARY
+
+Number of lines: 1
+Number of errors: 0
+Processing complete -- program is valid.

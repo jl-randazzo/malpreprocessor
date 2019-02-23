@@ -1,0 +1,53 @@
+---MAL ANALYZER REPORT---
+
+MAL program: duplabs.mal
+Report name: Report_duplabs.txt
+System time: Sat Feb 23 12:17:21 2019
+
+CS 3210 -- Written by: Josiah "Luke" Randazzo
+_________________________________________
+
+REPORT A -- FULL, UNEDITED PROGRAM
+1. ; luke randazzo: Duplicate labels
+2. 
+3. LOOP: LOADI R0, 72
+4. 
+5. LOAD R1, lab
+6. 
+7. LOOP: ADD R2, R1, R0
+8. 
+9. BEQ R2, R1, LOOP
+10. 
+11. LOOP: SUB R2, R1, R0
+12. 
+13. ;comment
+_________________________________________
+
+REPORT B -- PROGRAM WITH COMMENTS AND BLANK LINES REMOVED
+3. LOOP: LOADI R0, 72
+5. LOAD R1, lab
+7. LOOP: ADD R2, R1, R0
+9. BEQ R2, R1, LOOP
+11. LOOP: SUB R2, R1, R0
+_________________________________________
+
+REPORT C -- PROGRAM WITH ERROR CODES
+3. LOOP: LOADI R0, 72
+5. LOAD R1, lab
+7. LOOP: ADD R2, R1, R0
+** error -- the leading label "LOOP" is a duplicate of an existing label.
+**         Leading labels can only occur once, otherwise the branch location is non-deterministic.
+9. BEQ R2, R1, LOOP
+11. LOOP: SUB R2, R1, R0
+** error -- the leading label "LOOP" is a duplicate of an existing label.
+**         Leading labels can only occur once, otherwise the branch location is non-deterministic.
+** error -- the program was never terminated with the END directive.
+_________________________________________
+
+SUMMARY
+
+Number of lines: 5
+Number of errors: 3
+  Repeat Label: 2
+  Improper END: 1
+Processing complete -- program is not valid.

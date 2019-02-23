@@ -4,8 +4,6 @@
 #include <iostream>
 #include <regex>
 
-
-
 using namespace std;
 
 MalLine::MalLine(string line) : _line(line) { ProcessLine(); }
@@ -80,6 +78,11 @@ ErrorCode MalLine::GetErrorCode() const
 const string MalLine::GetErrorMessage() const
 {
 	return _errorMessage;
+}
+
+bool MalLine::IsEnd() const
+{
+	return _end;
 }
 
 //Does initial check if there's a label, if there is an isntruction, produces a working copy, and then sends
@@ -198,6 +201,7 @@ void MalLine::ProcessOperation(string &opcode, string &workingCopy)
 	else if (opcode._Equal("NOOP") | opcode._Equal("END")) //Is this a NOOP or END instruction?
 	{
 		_validLine = !HasNext(workingCopy); //There shouldn't be another operand
+		_end = opcode[0] == 'E';
 	}
 	else
 	{
@@ -331,7 +335,6 @@ bool MalLine::ValidateWord(string &targ, WordType type)
 	}
 }
 
-//Register words can have commas at the end or not
 ErrorCode MalLine::ValidateReg(const string &R)
 {
 	bool ret = false;
@@ -355,7 +358,6 @@ ErrorCode MalLine::ValidateImm(const string &imm)
 	else return InvalidCharacters;
 }
 
-//Identifiers always appear last, so they should have nothing appended to the end
 ErrorCode MalLine::ValidateIdent(const string &ident)
 {
 	bool ret = true;
@@ -369,4 +371,12 @@ ErrorCode MalLine::ValidateIdent(const string &ident)
 		if (searchLength < 6) return NoError;
 		else return InvalidLength;
 	else return InvalidCharacters;
+}
+
+//External call. Used by MalProgram when a label is repeated. 
+void MalLine::RepeatBranchingLabel()
+{
+	_errorCode = RepeatLabel;
+	_errorMessage = "** error -- the leading label \"" + _leadingLabel + "\" is a duplicate of an existing label.\n" +
+		"**         Leading labels can only occur once, otherwise the branch location is non-deterministic.";
 }

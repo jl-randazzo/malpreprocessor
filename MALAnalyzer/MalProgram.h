@@ -21,6 +21,7 @@ public:
 	//Accessor
 	int GetErrCount() const;
 	const int* GetErrTypeCountIt() const;
+	int GetLineCount() const;
 private:
 	//private functions
 	void ProcessLines(std::list<std::string> &stringList);
@@ -30,6 +31,9 @@ private:
 	bool CheckLabelBranching(std::string str) const; //returns false if the label branching is unresolved, true if it is resolved.
 	std::list<MalLine> _lines; //Houses all of the lines and their encapsulated information
 	int _errCount = 0; //the number of lines that have errors in them
+	int _lineCount = 0;
 	int _errTypeCounts[InvalidOpcode + 1];
+	bool _ended = false; //was the program ended?
+	std::string _programErr; //indicates an error with the program at large
 	std::map<std::string, lflags> _labelResolve; //labels are the keys. the 2^0 bit position indicates it's been reference in a branch operation. The 2^1 bit position indicates the label position is defined.
 };

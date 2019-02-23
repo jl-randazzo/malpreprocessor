@@ -12,7 +12,7 @@ static const std::string octal = std::string("01234567");
 enum ErrorCode
 {
 	NoError = 0, TooFewOps, TooManyOps, BadRegister, BadLabel, BadImmediate, BadIdent, InvalidLength, InvalidCharacters,
-	MisplacedComma, MissingComma, InvalidOpcode
+	MisplacedComma, MissingComma, RepeatLabel, BadEnd, InvalidOpcode
 };
 
 enum WordType
@@ -39,9 +39,12 @@ public:
 	bool HasBranchingLabel() const;
 	bool IsLineEmpty() const;
 	bool IsLineValid() const;
+	bool IsEnd() const;
 	int GetCommentIndex() const;
 	ErrorCode GetErrorCode() const;
 	const std::string GetErrorMessage() const;
+	//Error-setters
+	void RepeatBranchingLabel(); //mutator that notes that the discovered label has been encountered previously 
 private:
 	//private variables
 	std::string _line;
@@ -52,6 +55,7 @@ private:
 	bool _hasBranchingLabel = false;
 	bool _validLine;
 	bool _emptyLine = false;
+	bool _end = false;
 	int _commentIndex;
 	ErrorCode _errorCode = NoError;
 	std::string _errorMessage;

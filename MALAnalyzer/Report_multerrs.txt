@@ -1,0 +1,74 @@
+---MAL ANALYZER REPORT---
+
+MAL program: multerrs.mal
+Report name: Report_multerrs.txt
+System time: Sat Feb 23 12:16:41 2019
+
+CS 3210 -- Written by: Josiah "Luke" Randazzo
+_________________________________________
+
+REPORT A -- FULL, UNEDITED PROGRAM
+1. ; luke randazzo, error types are listed
+2. 
+3. LOADI R0, 92 ; invalid immediate value, should be in octal
+4. 
+5. LOAD R1, loc1 ; invalid identifier
+6. 
+7. INC r1 ; invalid register
+8. 
+9. DEC R1, ; misplaced comma
+10. 
+11. ADD loc, R0, R1 ; invalid operand: should be register
+12. 
+13. SUB R0 R1, R2 ; missing comma between operands
+14. 
+15. END ; program terminated too early
+16. 
+17. ADD R0, R0, R1
+_________________________________________
+
+REPORT B -- PROGRAM WITH COMMENTS AND BLANK LINES REMOVED
+3. LOADI R0, 92 
+5. LOAD R1, loc1 
+7. INC r1 
+9. DEC R1, 
+11. ADD loc, R0, R1 
+13. SUB R0 R1, R2 
+15. END 
+17. ADD R0, R0, R1
+_________________________________________
+
+REPORT C -- PROGRAM WITH ERROR CODES
+3. LOADI R0, 92 
+** error -- ill-formed immediate value: "92" has invalid characters.
+**         Immediate values cannot have more than 8 characters and are written in octal representation (0-7).
+5. LOAD R1, loc1 
+** error -- ill-formed identifier: the identifier "loc1" has invalid characters.
+**         Identifiers must be only letters (a-z, A-Z) and no longer than five characters.
+7. INC r1 
+** error -- ill-formed operand: invalid register declaration "r1"
+**         Registers should be typed in the form R0, R1, R2, and are enumerated 0-7.
+9. DEC R1, 
+** error -- errant argument delimiter: the argument "R1" should not have a comma following it.
+**          All arguments except the final argument should have a ',' immediately following them.
+11. ADD loc, R0, R1 
+** error -- ill-formed operand: invalid register declaration "loc"
+**         Registers should be typed in the form R0, R1, R2, and are enumerated 0-7.
+13. SUB R0 R1, R2 
+** error -- errant argument delimiter: the argument "R0" should not have a comma following it.
+**          All arguments except the final argument should have a ',' immediately following them.
+15. END 
+17. ADD R0, R0, R1
+** error -- instructions continue after the END directive. All instructions must precede END.
+_________________________________________
+
+SUMMARY
+
+Number of lines: 9
+Number of errors: 7
+  Bad Register: 2
+  Invalid Characters: 2
+  Misplaced Comma: 1
+  Missing Comma: 1
+  Improper END: 1
+Processing complete -- program is not valid.
