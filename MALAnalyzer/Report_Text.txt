@@ -2,7 +2,7 @@
 
 MAL program: Text.mal
 Report name: Report_Text.txt
-System time: Sat Feb 23 09:16:15 2019
+System time: Sat Feb 23 11:16:14 2019
 
 CS 3210 -- Written by: Josiah "Luke" Randazzo
 _________________________________________
