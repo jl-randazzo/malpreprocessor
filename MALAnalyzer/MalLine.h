@@ -11,9 +11,10 @@ static const std::string octal = std::string("01234567");
 
 enum ErrorCode
 {
-	NoError, TooFewOps, TooManyOps, BadRegister, BadLabel, BadImmediate, BadIdent, InvalidLength, InvalidCharacters,
+	NoError = 0, TooFewOps, TooManyOps, BadRegister, BadLabel, BadImmediate, BadIdent, InvalidLength, InvalidCharacters,
 	MisplacedComma, MissingComma, InvalidOpcode
 };
+
 enum WordType
 {
 	Register, Immediate, MemAddress
@@ -52,7 +53,7 @@ private:
 	bool _validLine;
 	bool _emptyLine = false;
 	int _commentIndex;
-	ErrorCode _errorCode;
+	ErrorCode _errorCode = NoError;
 	std::string _errorMessage;
 	//line processor and related functions
 	void ProcessLine();

@@ -18,6 +18,9 @@ public:
 	friend void WriteReportA(const MalProgram &program, std::ofstream &file);
 	friend void WriteReportB(const MalProgram &program, std::ofstream &file);
 	friend void WriteReportC(const MalProgram &program, std::ofstream &file);
+	//Accessor
+	int GetErrCount() const;
+	const int* GetErrTypeCountIt() const;
 private:
 	//private functions
 	void ProcessLines(std::list<std::string> &stringList);
@@ -25,6 +28,8 @@ private:
 	void ResolveLabelBranch(std::string str); //called when a branching label is found
 	bool CheckLabelLocationFound(std::string str) const; //returns false if the label location is unresolved, true if it is resolved.
 	bool CheckLabelBranching(std::string str) const; //returns false if the label branching is unresolved, true if it is resolved.
-	std::list<MalLine> _lines;
+	std::list<MalLine> _lines; //Houses all of the lines and their encapsulated information
+	int _errCount = 0; //the number of lines that have errors in them
+	int _errTypeCounts[InvalidOpcode + 1];
 	std::map<std::string, lflags> _labelResolve; //labels are the keys. the 2^0 bit position indicates it's been reference in a branch operation. The 2^1 bit position indicates the label position is defined.
 };
