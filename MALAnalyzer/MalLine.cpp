@@ -142,7 +142,7 @@ void MalLine::ProcessLine()
 void MalLine::ProcessOperation(string &opcode, string &workingCopy)
 {
 	string lastarg; // a reference string used to configure error message if there's a problem
-	if (opcode._Equal("ADD") | opcode._Equal("SUB")) //Is this an ADD or SUB instruction?
+	if (opcode._Equal("ADD") || opcode._Equal("SUB")) //Is this an ADD or SUB instruction?
 	{
 		string args[3];
 		_errorCode = ExtractArgs(workingCopy, lastarg, args, 3);
@@ -153,7 +153,7 @@ void MalLine::ProcessOperation(string &opcode, string &workingCopy)
 				ValidateWord(args[2], Register);
 		}
 	}
-	else if (opcode._Equal("INC") | opcode._Equal("DEC")) //Is this an INC or DEC instruction?
+	else if (opcode._Equal("INC") || opcode._Equal("DEC")) //Is this an INC or DEC instruction?
 	{
 		string args[1];
 		_errorCode = ExtractArgs(workingCopy, lastarg, args, 1);
@@ -162,7 +162,7 @@ void MalLine::ProcessOperation(string &opcode, string &workingCopy)
 			_validLine = ValidateWord(args[0], Register);
 		}
 	}
-	else if (opcode._Equal("LOAD") | opcode._Equal("STORE")) //Is this a LOAD or STORE instruction?
+	else if (opcode._Equal("LOAD") || opcode._Equal("STORE")) //Is this a LOAD or STORE instruction?
 	{
 		string args[2];
 		_errorCode = ExtractArgs(workingCopy, lastarg, args, 2);
@@ -180,7 +180,7 @@ void MalLine::ProcessOperation(string &opcode, string &workingCopy)
 			_validLine = ValidateWord(args[0], Register) && ValidateWord(args[1], Immediate);
 		}
 	}
-	else if (opcode._Equal("BEQ") | opcode._Equal("BGT") | opcode._Equal("BLT")) //Is this a BEQ, BLT, or BGT instruction?
+	else if (opcode._Equal("BEQ") || opcode._Equal("BGT") || opcode._Equal("BLT")) //Is this a BEQ, BLT, or BGT instruction?
 	{
 		string args[3];
 		_errorCode = ExtractArgs(workingCopy, lastarg, args, 3);
@@ -203,7 +203,7 @@ void MalLine::ProcessOperation(string &opcode, string &workingCopy)
 			_validLine = ValidateWord(args[0], MemAddress);
 		}
 	}
-	else if (opcode._Equal("NOOP") | opcode._Equal("END")) //Is this a NOOP or END instruction?
+	else if (opcode._Equal("NOOP") || opcode._Equal("END")) //Is this a NOOP or END instruction?
 	{
 		if (HasNext(workingCopy))
 			_errorCode = TooManyOps;
