@@ -1,0 +1,62 @@
+---MAL ANALYZER REPORT---
+
+MAL program: count-10-Gurka.mal
+Report name: Report_count-10-Gurka.txt
+System time: Wed Feb 27 07:25:16 2019
+
+CS 3210 -- Written by: Josiah "Luke" Randazzo
+_________________________________________
+
+REPORT A -- FULL, UNEDITED PROGRAM
+1. ; initialize
+2. ;
+3.           LOADI     R0, 0             ; running total
+4.           LOADI     R1, 1             ; *for* loop counter & 
+5.                                       ;    value to be summed
+6.           LOADI     R2, 12            ; loop limit, 12 octal = 10
+7. 
+8. ; for loop: top test, definite loop
+9.   TOP:    
+10.           BGT       R1, R2, CONT      ; value > 10 (limit)?
+11.           ADD       R0, R1, R0        ; total + value = total
+12.           INC       R1                ; value++
+13.           BR        TOP
+14.   CONT:   STORE     R0, TOTAL         ; save final sum
+15. 
+16. ; program complete      
+17.           END
+18. 
+_________________________________________
+
+REPORT B -- PROGRAM WITH COMMENTS AND BLANK LINES REMOVED
+3. LOADI     R0, 0             
+4. LOADI     R1, 1             
+6. LOADI     R2, 12            
+9. TOP:    
+10. BGT       R1, R2, CONT      
+11. ADD       R0, R1, R0        
+12. INC       R1                
+13. BR        TOP
+14. CONT:   STORE     R0, TOTAL         
+17. END
+_________________________________________
+
+REPORT C -- PROGRAM WITH ERROR CODES
+3. LOADI     R0, 0             
+4. LOADI     R1, 1             
+6. LOADI     R2, 12            
+9. TOP:    
+10. BGT       R1, R2, CONT      
+11. ADD       R0, R1, R0        
+12. INC       R1                
+13. BR        TOP
+14. CONT:   STORE     R0, TOTAL         
+17. END
+
+_________________________________________
+
+SUMMARY
+
+Number of lines: 10
+Number of errors: 0
+Processing complete -- program is valid.

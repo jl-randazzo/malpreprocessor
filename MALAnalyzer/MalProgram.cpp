@@ -3,6 +3,7 @@
 
 using namespace std;
 
+
 MalProgram::MalProgram(list<string> &stringList)
 {
 	ProcessLines(stringList);
@@ -14,6 +15,7 @@ int MalProgram::GetErrCount() const
 	return _errCount;
 }
 
+//returns a pointer to the beginning of the error type count array
 const int* MalProgram::GetErrTypeCountIt() const
 {
 	return _errTypeCounts;
@@ -38,9 +40,10 @@ void MalProgram::ProcessLines(list<string> &stringList)
 		//If we have any labels, resolve them in the label dictionary
 		if (ml.HasLeadingLabel())
 		{
-			if (CheckLabelLocationFound(ml.GetLeadingLabel())) ml.RepeatBranchingLabel();
-			else ResolveLabelLocation(ml.GetLeadingLabel());
+			if (CheckLabelLocationFound(ml.GetLeadingLabel())) ml.RepeatBranchingLabel(); //set error information associated with repeating a leading label
+			else ResolveLabelLocation(ml.GetLeadingLabel()); //otherwise, resolve label in dictionary
 		}
+
 		if (ml.HasBranchingLabel())
 			ResolveLabelBranch(ml.GetBranchingLabel());
 
@@ -89,11 +92,13 @@ void MalProgram::ResolveLabelBranch(string str)
 	_labelResolve[str] |= BRANCHED_TO;
 }
 
+//checks if the label is in the dictionary and if so, if the LOCATED flag is set
 bool MalProgram::CheckLabelLocationFound(string str) const
 {
 	return (_labelResolve.count(str) > 0 && _labelResolve.at(str) & LOCATED);
 }
 
+//checks if the label is in the dictionary and if so, if the BRANCHED_TO flag is set
 bool MalProgram::CheckLabelBranching(string str) const
 {
 	return (_labelResolve.count(str) > 0 && _labelResolve.at(str) & BRANCHED_TO);

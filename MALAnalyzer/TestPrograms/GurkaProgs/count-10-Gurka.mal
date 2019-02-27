@@ -1,0 +1,18 @@
+; initialize
+;
+          LOADI     R0, 0             ; running total
+          LOADI     R1, 1             ; *for* loop counter & 
+                                      ;    value to be summed
+          LOADI     R2, 12            ; loop limit, 12 octal = 10
+
+; for loop: top test, definite loop
+  TOP:    
+          BGT       R1, R2, CONT      ; value > 10 (limit)?
+          ADD       R0, R1, R0        ; total + value = total
+          INC       R1                ; value++
+          BR        TOP
+  CONT:   STORE     R0, TOTAL         ; save final sum
+
+; program complete      
+          END
+

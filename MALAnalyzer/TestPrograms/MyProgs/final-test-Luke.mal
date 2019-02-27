@@ -1,0 +1,10 @@
+;implements a final check on a few features
+
+RUN R1 ; invalid opcode/label
+BR1: LOADI R0, 72 ;invalid label
+NOOP ;no error
+NOOP R1 ; too many ops
+BR: BR LOOP ; branch label to loop, warning, loop never found
+BEQ R0, R1, BR
+END
+;comment after END won't break program

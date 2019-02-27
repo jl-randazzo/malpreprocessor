@@ -1,0 +1,86 @@
+---MAL ANALYZER REPORT---
+
+MAL program: multerrs-Afana.mal
+Report name: Report_multerrs-Afana.txt
+System time: Wed Feb 27 07:22:19 2019
+
+CS 3210 -- Written by: Josiah "Luke" Randazzo
+_________________________________________
+
+REPORT A -- FULL, UNEDITED PROGRAM
+1. ;PROGRAM WITH MULTIPlE ERRORS SEE COMMENTS/JOHN AFANA
+2. 
+3. LOADI   R0, 5
+4. 
+5. ADD       RO, RO, RO         ; INVALID REGISTER
+6. 
+7. LOADI   R1, 2
+8. 
+9. LOADI R4, 1
+10. 
+11. ADD       R2, R1, R4
+12. 
+13. INC         R1
+14. 
+15. LOOP1:                                 ; INVALID CHARACTER IN LABEL
+16. 
+17. ADD       R2, R2, R1
+18. 
+19. INC         R1
+20. 
+21. BLT         R1, R0, LOOP1    ; INVALID LABEL
+22. 
+23. ADD       R2, R2, R1
+24. 
+25. STORE   R2, SUM
+26. 
+27. END
+_________________________________________
+
+REPORT B -- PROGRAM WITH COMMENTS AND BLANK LINES REMOVED
+3. LOADI   R0, 5
+5. ADD       RO, RO, RO         
+7. LOADI   R1, 2
+9. LOADI R4, 1
+11. ADD       R2, R1, R4
+13. INC         R1
+15. LOOP1:                                 
+17. ADD       R2, R2, R1
+19. INC         R1
+21. BLT         R1, R0, LOOP1    
+23. ADD       R2, R2, R1
+25. STORE   R2, SUM
+27. END
+_________________________________________
+
+REPORT C -- PROGRAM WITH ERROR CODES
+3. LOADI   R0, 5
+5. ADD       RO, RO, RO         
+** error -- ill-formed operand: invalid register declaration "RO"
+**         Registers should be typed in the form R0, R1, R2, and are enumerated 0-7.
+7. LOADI   R1, 2
+9. LOADI R4, 1
+11. ADD       R2, R1, R4
+13. INC         R1
+15. LOOP1:                                 
+** error -- ill-formed leading label: the label "LOOP1" has invalid characters.
+**         Labels must be only letters (a-z, A-Z) and no longer than five characters.
+17. ADD       R2, R2, R1
+19. INC         R1
+21. BLT         R1, R0, LOOP1    
+** error -- ill-formed identifier: the identifier "LOOP1" has invalid characters.
+**         Identifiers must be only letters (a-z, A-Z) and no longer than five characters.
+** warning -- branching label "LOOP1" is not defined in the program scope.
+23. ADD       R2, R2, R1
+25. STORE   R2, SUM
+27. END
+
+_________________________________________
+
+SUMMARY
+
+Number of lines: 13
+Number of errors: 3
+  Bad Register: 1
+  Invalid Characters: 2
+Processing complete -- program is not valid.

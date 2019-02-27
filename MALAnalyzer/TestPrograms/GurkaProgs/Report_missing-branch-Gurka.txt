@@ -1,0 +1,39 @@
+---MAL ANALYZER REPORT---
+
+MAL program: missing-branch-Gurka.mal
+Report name: Report_missing-branch-Gurka.txt
+System time: Wed Feb 27 07:23:36 2019
+
+CS 3210 -- Written by: Josiah "Luke" Randazzo
+_________________________________________
+
+REPORT A -- FULL, UNEDITED PROGRAM
+1. ; label without branch statement / Gurka
+2. 
+3. LOAD R5, DATA
+4. 
+5. INC R5
+6. 
+7. X: STORE R5, DATA
+_________________________________________
+
+REPORT B -- PROGRAM WITH COMMENTS AND BLANK LINES REMOVED
+3. LOAD R5, DATA
+5. INC R5
+7. X: STORE R5, DATA
+_________________________________________
+
+REPORT C -- PROGRAM WITH ERROR CODES
+3. LOAD R5, DATA
+5. INC R5
+7. X: STORE R5, DATA
+** warning -- leading label "X" is never branched to within the program scope.
+** error -- the program was never terminated with the END directive.
+_________________________________________
+
+SUMMARY
+
+Number of lines: 3
+Number of errors: 1
+  Improper END: 1
+Processing complete -- program is not valid.

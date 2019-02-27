@@ -1,8 +1,8 @@
 ---MAL ANALYZER REPORT---
 
-MAL program: multerrs.mal
-Report name: Report_multerrs.txt
-System time: Sat Feb 23 12:16:41 2019
+MAL program: multerrs-Luke.mal
+Report name: Report_multerrs-Luke.txt
+System time: Wed Feb 27 07:21:29 2019
 
 CS 3210 -- Written by: Josiah "Luke" Randazzo
 _________________________________________

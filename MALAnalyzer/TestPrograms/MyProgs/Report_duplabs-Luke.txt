@@ -1,14 +1,14 @@
 ---MAL ANALYZER REPORT---
 
-MAL program: duplabs.mal
-Report name: Report_duplabs.txt
-System time: Sat Feb 23 12:17:21 2019
+MAL program: duplabs-Luke.mal
+Report name: Report_duplabs-Luke.txt
+System time: Wed Feb 27 07:25:41 2019
 
 CS 3210 -- Written by: Josiah "Luke" Randazzo
 _________________________________________
 
 REPORT A -- FULL, UNEDITED PROGRAM
-1. ; luke randazzo: Duplicate labels
+1. ; luke randazzo: Duplicate labels and missing END statement
 2. 
 3. LOOP: LOADI R0, 72
 4. 

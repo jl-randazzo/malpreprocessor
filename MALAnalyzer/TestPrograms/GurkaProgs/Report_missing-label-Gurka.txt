@@ -1,0 +1,42 @@
+---MAL ANALYZER REPORT---
+
+MAL program: missing-label-Gurka.mal
+Report name: Report_missing-label-Gurka.txt
+System time: Wed Feb 27 07:23:01 2019
+
+CS 3210 -- Written by: Josiah "Luke" Randazzo
+_________________________________________
+
+REPORT A -- FULL, UNEDITED PROGRAM
+1. ;; warning: label missing for branch statement / Gurka
+2. 
+3. LOADI  R1, 7
+4. 
+5. LOADI  R2, 100
+6. 
+7. BEQ  R1, R2, TEST ; Test comment
+8. 
+9. END
+_________________________________________
+
+REPORT B -- PROGRAM WITH COMMENTS AND BLANK LINES REMOVED
+3. LOADI  R1, 7
+5. LOADI  R2, 100
+7. BEQ  R1, R2, TEST 
+9. END
+_________________________________________
+
+REPORT C -- PROGRAM WITH ERROR CODES
+3. LOADI  R1, 7
+5. LOADI  R2, 100
+7. BEQ  R1, R2, TEST 
+** warning -- branching label "TEST" is not defined in the program scope.
+9. END
+
+_________________________________________
+
+SUMMARY
+
+Number of lines: 4
+Number of errors: 0
+Processing complete -- program is valid.

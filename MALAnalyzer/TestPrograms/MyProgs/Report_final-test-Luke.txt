@@ -1,0 +1,57 @@
+---MAL ANALYZER REPORT---
+
+MAL program: final-test-Luke.mal
+Report name: Report_final-test-Luke.txt
+System time: Wed Feb 27 07:19:43 2019
+
+CS 3210 -- Written by: Josiah "Luke" Randazzo
+_________________________________________
+
+REPORT A -- FULL, UNEDITED PROGRAM
+1. ;implements a final check on a few features
+2. 
+3. RUN R1 ; invalid opcode/label
+4. BR1: LOADI R0, 72 ;invalid label
+5. NOOP ;no error
+6. NOOP R1 ; too many ops
+7. BR: BR LOOP ; branch label to loop, warning, loop never found
+8. BEQ R0, R1, BR
+9. END
+10. ;comment after END won't break program
+_________________________________________
+
+REPORT B -- PROGRAM WITH COMMENTS AND BLANK LINES REMOVED
+3. RUN R1 
+4. BR1: LOADI R0, 72 
+5. NOOP 
+6. NOOP R1 
+7. BR: BR LOOP 
+8. BEQ R0, R1, BR
+9. END
+_________________________________________
+
+REPORT C -- PROGRAM WITH ERROR CODES
+3. RUN R1 
+** error -- "RUN" is an invalid label or operation code.
+**          Labels must be immediately followed with ':', and operations are defined in the MAL manual.
+4. BR1: LOADI R0, 72 
+** error -- ill-formed leading label: the label "BR1" has invalid characters.
+**         Labels must be only letters (a-z, A-Z) and no longer than five characters.
+5. NOOP 
+6. NOOP R1 
+** error -- too many operands: for the specified opcode, "NOOP," there are more operands than required
+7. BR: BR LOOP 
+** warning -- branching label "LOOP" is not defined in the program scope.
+8. BEQ R0, R1, BR
+9. END
+
+_________________________________________
+
+SUMMARY
+
+Number of lines: 7
+Number of errors: 3
+  Too Many Operands: 1
+  Invalid Characters: 1
+  Invalid Opcode: 1
+Processing complete -- program is not valid.

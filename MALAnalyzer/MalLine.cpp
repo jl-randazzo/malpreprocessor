@@ -8,6 +8,7 @@ using namespace std;
 
 MalLine::MalLine(string line) : _line(line) { ProcessLine(); }
 
+
 // outstream operator designed for testing purposes
 ostream & operator <<(ostream &out, const MalLine &malLine)
 {
@@ -109,8 +110,12 @@ void MalLine::ProcessLine()
 			case NoError: // valid label?
 				_leadingLabel = labelcheck;
 				_hasLeadingLabel = true;
-				targ = PopNext(workingCopy);
-				ProcessOperation(targ, workingCopy);
+
+				if (HasNext(workingCopy)) // We can have just a label on a line
+				{
+					targ = PopNext(workingCopy);
+					ProcessOperation(targ, workingCopy);
+				}
 				break;
 			case InvalidLength:
 				_errorMessage = "** error -- ill-formed leading label: the label \"" + labelcheck + "\" is too long.\n" +
@@ -187,7 +192,7 @@ void MalLine::ProcessOperation(string &opcode, string &workingCopy)
 				&& ValidateWord(args[2], MemAddress);
 		}
 	}
-	else if (opcode._Equal("B")) //Is this a B instruction?
+	else if (opcode._Equal("BR")) //Is this a B instruction?
 	{
 		string args[1];
 		_errorCode = ExtractArgs(workingCopy, lastarg, args, 1);
@@ -200,7 +205,8 @@ void MalLine::ProcessOperation(string &opcode, string &workingCopy)
 	}
 	else if (opcode._Equal("NOOP") | opcode._Equal("END")) //Is this a NOOP or END instruction?
 	{
-		_validLine = !HasNext(workingCopy); //There shouldn't be another operand
+		if (HasNext(workingCopy))
+			_errorCode = TooManyOps;
 		_end = opcode[0] == 'E';
 	}
 	else
@@ -216,11 +222,11 @@ void MalLine::ProcessOperation(string &opcode, string &workingCopy)
 	{
 	case TooFewOps:
 		_validLine = false;
-		_errorMessage = "** error -- too few operands: for the specific opcode, there are fewer operands than required";
+		_errorMessage = "** error -- too few operands: for the specified opcode, \"" + opcode + ",\" there are fewer operands than required";
 		break;
 	case TooManyOps:
 		_validLine = false;
-		_errorMessage = "** error -- too many operands: for the specific opcode, there are more operands than required";
+		_errorMessage = "** error -- too many operands: for the specified opcode, \"" + opcode + ",\" there are more operands than required";
 		break;
 	case MissingComma:
 		_validLine = false;

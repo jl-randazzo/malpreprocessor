@@ -1,0 +1,62 @@
+---MAL ANALYZER REPORT---
+
+MAL program: too-many-ops-Schaible.mal
+Report name: Report_too-many-ops-Schaible.txt
+System time: Wed Feb 27 07:20:50 2019
+
+CS 3210 -- Written by: Josiah "Luke" Randazzo
+_________________________________________
+
+REPORT A -- FULL, UNEDITED PROGRAM
+1. 
+2. ;TOO MANY OPERANDS
+3. 
+4. LOADI R0, 1
+5. 
+6. LOADI R1, 1, 1
+7. 
+8. LOADI R2, 0
+9. 
+10. ADD R2, R1, R0
+11. 
+12. ADD R2, R0, R0, R0
+13. 
+14. SUB R2, R1, R2, R2
+15. 
+16. STORE R2, new
+17. 
+18. END
+_________________________________________
+
+REPORT B -- PROGRAM WITH COMMENTS AND BLANK LINES REMOVED
+4. LOADI R0, 1
+6. LOADI R1, 1, 1
+8. LOADI R2, 0
+10. ADD R2, R1, R0
+12. ADD R2, R0, R0, R0
+14. SUB R2, R1, R2, R2
+16. STORE R2, new
+18. END
+_________________________________________
+
+REPORT C -- PROGRAM WITH ERROR CODES
+4. LOADI R0, 1
+6. LOADI R1, 1, 1
+** error -- too many operands: for the specified opcode, "LOADI," there are more operands than required
+8. LOADI R2, 0
+10. ADD R2, R1, R0
+12. ADD R2, R0, R0, R0
+** error -- too many operands: for the specified opcode, "ADD," there are more operands than required
+14. SUB R2, R1, R2, R2
+** error -- too many operands: for the specified opcode, "SUB," there are more operands than required
+16. STORE R2, new
+18. END
+
+_________________________________________
+
+SUMMARY
+
+Number of lines: 8
+Number of errors: 3
+  Too Many Operands: 3
+Processing complete -- program is not valid.

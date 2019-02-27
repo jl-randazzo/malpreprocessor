@@ -1,4 +1,4 @@
-; luke randazzo: Duplicate labels
+; luke randazzo: Duplicate labels and missing END statement
 
 LOOP: LOADI R0, 72
 
